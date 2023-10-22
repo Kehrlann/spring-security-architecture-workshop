@@ -1,0 +1,27 @@
+# keep
+server:
+  servlet:
+    session:
+      persistent: false
+spring:
+  thymeleaf:
+    cache: false
+    prefix: file:src/main/resources/templates/
+
+  security:
+    user:
+      name: user
+      password: password
+    oauth2:
+      client:
+        registration:
+          dex:
+            client-id: base-client
+            client-secret: base-secret
+            client-name: Login with Dex
+            scope:
+              - openid
+              - email
+        provider:
+          dex:
+            issuer-uri: http://localhost:5556
