@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.AuthorizationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -30,6 +31,7 @@ public class SecurityConfiguration {
                 .oauth2Login(oidc -> {
                     oidc.defaultSuccessUrl("/private");
                 })
+                .addFilterBefore(new VerbodenFilter(), AuthorizationFilter.class)
                 .build();
     }
 
