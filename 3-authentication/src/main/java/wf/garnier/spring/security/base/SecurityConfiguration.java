@@ -32,6 +32,7 @@ public class SecurityConfiguration {
                     oidc.defaultSuccessUrl("/private");
                 })
                 .addFilterBefore(new VerbodenFilter(), AuthorizationFilter.class)
+                .addFilterBefore(new RobotAuthenticationFilter(), AuthorizationFilter.class)
                 .build();
     }
 
