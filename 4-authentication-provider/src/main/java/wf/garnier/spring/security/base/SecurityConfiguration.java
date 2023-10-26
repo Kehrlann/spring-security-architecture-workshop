@@ -1,7 +1,10 @@
 package wf.garnier.spring.security.base;
 
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -31,8 +34,10 @@ public class SecurityConfiguration {
                 .oauth2Login(oidc -> {
                     oidc.defaultSuccessUrl("/private");
                 })
+                .httpBasic(Customizer.withDefaults())
                 .addFilterBefore(new VerbodenFilter(), AuthorizationFilter.class)
                 .addFilterBefore(new RobotAuthenticationFilter(), AuthorizationFilter.class)
+                .authenticationProvider(new DanielAuthenticationProvider())
                 .build();
     }
 
@@ -47,4 +52,18 @@ public class SecurityConfiguration {
                 .build();
         return new InMemoryUserDetailsManager(alice, bob);
     }
+
+    @Bean
+    public ApplicationListener<AuthenticationSuccessEvent> listener() {
+        var logger = LoggerFactory.getLogger("🔐 custom-security-logger");
+
+        return event -> {
+            var auth = event.getAuthentication();
+            logger.info(
+                    "[{}] logged in as [{}]",
+                    auth.getName(),
+                    auth.getClass().getSimpleName());
+        };
+    }
+
 }
