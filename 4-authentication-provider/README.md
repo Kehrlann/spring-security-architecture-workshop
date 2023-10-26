@@ -251,8 +251,8 @@ Finally, you have encountered all the authentication building blocks in Spring S
 Servlet mode; Reactive is not super different, it has `Filter`s but they are `WebFilter`s with
 reactive types instead, and its own reactive `AuthenticationManager`.
 
-In the next module, we'll look at shortcuts to handle certain types of authentications flows without
-having to write a filter, and to overload existing Spring Security authentication flows.
+In the next module, we'll dive deeper into overloading existing behavior, rather than implementing
+stuff from scratch.
 
 [^1]:
     To learn more about Spring Framework eventing support, check out the
