@@ -187,22 +187,22 @@ First, create an implementation of `org.springframework.security.core.Authentica
 
 If you implement `Authentication` directly, you'll see that you need to override a lot of methods
 that may not make much sense to you. Instead, we can use an abstract base class:
-`AbstractAuthentication`.
-
-```java
-// TODO: links to abstract authentication token
-// TODO: links to tutorial?
-// TODO: link to AuthorityUtils
-```
+[AbstractAuthenticationToken](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/authentication/AbstractAuthenticationToken.html)
 
 The following rules must apply:
 
 1. Credentials must be null
 2. "Authenticated" must be true
 3. The principal must be a String, for example `Ms Robot`. Note: it could be anything but we will
-   use the simplest thing we can
+   use the simplest thing we can.
 4. Authorities must be a list with only `ROLE_robot` as a value. Note: it could be a list containing
-   anything. See the `AuthorityUtils` class.
+   anything, or even "no authorities" (empty list), but it can't be null.
+   - Authorities represent "high-level permissions" for a user. If you want to learn more, head to
+     the
+     [reference docs](https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html#servlet-authentication-granted-authority)
+   - If you want to implement authorities here, see also the handy
+     [AuthorityUtils](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/core/authority/AuthorityUtils.html)
+     utility class
 
 Additionally, if you look at the documentation of `AbstractAuthenticationToken`, it is recommended
 that subclasses be immutable. Try and make your implementation immutable.
