@@ -243,7 +243,7 @@ Try logging in with:
 
 Notice that for the first two cases, you get a log event, but for the robot authentication you
 don't. That's because our custom Robot filter does not leverage the `AuthenticationManager`
-interface. We will introduce it in one of the last modules, if we have time.
+interface.
 
 ## Closing out
 
