@@ -392,17 +392,6 @@ Now try the full behavior again:
 // TODO
 ```
 
-## (Optional) Step 6: a word on the filter order
-
-```java
-// TODO
-// TODO
-// TODO
-// TODO
-// TODO
-// TODO
-```
-
 ## Closing out
 
 We have wired a filter to update the security context and authenticate an entity. You now have the
