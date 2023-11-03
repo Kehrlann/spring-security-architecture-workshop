@@ -20,6 +20,7 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.apply(new RobotConfigurer());
         return http
                 .authorizeHttpRequests(authorize -> {
                     authorize.requestMatchers("/").permitAll();
@@ -36,7 +37,6 @@ public class SecurityConfiguration {
                 })
                 .httpBasic(Customizer.withDefaults())
                 .addFilterBefore(new VerbodenFilter(), AuthorizationFilter.class)
-                .addFilterBefore(new RobotAuthenticationFilter(), AuthorizationFilter.class)
                 .authenticationProvider(new DanielAuthenticationProvider())
                 .build();
     }
