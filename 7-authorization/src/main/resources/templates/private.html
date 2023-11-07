@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>🔐 Private Page [Spring Sec: The Good Parts]</title>
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+	<h1>VIP section 🥳🎉🎊</h1>
+	<p>Hello, ~[<th:block th:text="${name}" />]~ !</p>
+	<p>You are on the very exclusive private page.</p>
+	<h2>Navigate</h2>
+	<a href="/admin" class="btn">Go to admin</a>
+	<p></p>
+	<a href="/oauth" class="btn">Go to OAuth</a>
+	<h2>Log out</h2>
+	<form method="post" action="/logout" th:if="${_csrf != null}">
+		<input name="_csrf" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+		<button class="btn" type="submit">Log out</button>
+	</form>
+</body>
+</html>

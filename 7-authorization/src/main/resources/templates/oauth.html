@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>🔐 OAuth2 Page [Spring Sec: The Good Parts]</title>
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+	<h1>OAuth2 section 🔐💻</h1>
+	<p>Hello, ~[<th:block th:text="${name}" />]~ !</p>
+	<p>This page is only for OAuth2 users</p>
+	<p></p>
+	<form method="post" action="/logout" th:if="${_csrf != null}">
+		<input name="_csrf" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+		<button class="btn" type="submit">Log out</button>
+	</form>
+	<a href="/private" class="btn">Go to private</a>
+</body>
+</html>
