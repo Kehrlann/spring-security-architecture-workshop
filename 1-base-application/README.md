@@ -66,15 +66,8 @@ You will have to reload your Gradle project, and restart your application. Sprin
 doesn't bode well with dependency changes.
 
 Once this is done, navigate back to the main page: http://localhost:8080/ ... you should see a form
-login! This is a default Spring Security configuration that Spring Boot applies automatically.
-
-```java
-// TODO
-// TODO
-// TODO formLogin
-// TODO
-// TODO
-```
+login, with username and password fields. This is a default Spring Security configuration that
+Spring Boot applies automatically.
 
 > 🧑‍🔬 To learn more, check out the Spring Boot docs -
 > [8.4 Spring Security](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#web.security)
