@@ -4,12 +4,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.client.oidc.authentication.OidcAuthorizationCodeAuthenticationProvider;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
@@ -34,6 +37,23 @@ public class SecurityConfiguration {
                 })
                 .oauth2Login(oidc -> {
                     oidc.defaultSuccessUrl("/private");
+                    oidc.withObjectPostProcessor(
+                            // Note: this is an anonymous implementation, but you could
+                            // make a real class out of it.
+                            new ObjectPostProcessor<AuthenticationProvider>() {
+                                @Override
+                                public <O extends AuthenticationProvider> O postProcess(O object) {
+                                    if (object instanceof OidcAuthorizationCodeAuthenticationProvider oidcProvider) {
+                                        return (O) new CustomOidcAuthenticationProvider(oidcProvider);
+                                    }
+                                    return object;
+                                }
+                            });
+
+                    // 💡 If you want to do it "right", you might want to do this instead
+                    // oidc.userInfoEndpoint(ui -> {
+                    // ui.oidcUserService(new DomainAwareOidcUserService());
+                    // });
                 })
                 .httpBasic(Customizer.withDefaults())
                 .addFilterBefore(new VerbodenFilter(), AuthorizationFilter.class)
