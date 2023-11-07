@@ -73,6 +73,7 @@ _instructor_ Welcome ; explain the format ; share the repository
    - _instructor_ 🗒️ explain how to check which filters are registered
    - _instructor_ 💡️ introduce authentication and security context
 3. Adding custom authentication
+   - _instructor_ 🗒️ a word on persisting authentication between requests
    - _instructor_ 💡 introduce use-case, why a filter would be inconvenient
 4. An authentication provider
    - _instructor_ 🗒️ debrief auth types (HTTP Basic vs Form POST)

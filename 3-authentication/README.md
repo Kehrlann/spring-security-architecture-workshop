@@ -381,16 +381,6 @@ Now try the full behavior again:
 2. `curl localhost:8080/private -H "x-robot-secret: WHAT-IS-THE-SECRET"` should fail
 3. Normal, browser-based flows should still function as usual
 
-## (Optional) Step 5: persisting the context between requests
-
-```java
-// TODO
-// TODO
-// TODO
-// TODO
-// TODO
-// TODO
-```
 
 ## Closing out
 
