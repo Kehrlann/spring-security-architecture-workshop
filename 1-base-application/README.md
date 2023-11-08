@@ -567,7 +567,7 @@ If you know you way around an online service and want to use it, you may registe
 
 Use the redirect URI `http://localhost:8080/login/oauth2/code/<REGISTRATION_ID>`, where
 `<REGISTRATION_ID>` is any alphanumeric string you want, representing that provider (I recommend
-something like `okta` for Okta, `auth0` for Google, etc). When the registration is complete, you
+something like `okta` for Okta, `auth0` for Auth0, etc). When the registration is complete, you
 will obtain a `client_id` and a `client_secret`. Take note of them. You must also find the
 `issuer_uri` for your auth server, usually described somewhere in the UI. The username and password
 will be anything you use to login with that service.
@@ -604,7 +604,7 @@ probably looks like a random string. We would like to display the e-mail instead
 `GreetingsController#getName(Authentication)` method to show the e-mail. In order to find the
 e-mail, run your application in debug mode, and then inspect the `Authentication.principal` object.
 
-> 🚨 Your app should still as before when you log in with username / password.
+> 🚨 Your app should still work as before when you log in with username / password.
 > `GreetingsController#getName` should be be able to handle both cases.
 
 ---
