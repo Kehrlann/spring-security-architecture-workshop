@@ -42,7 +42,8 @@ There is a guide in the
 which is helpful reference material, but for once I recommend you follow what's in this README
 instead.
 
-Jakarta. The basic Filter class for Spring is called
+Jakarta is a very low-level API, we will prefer using Spring whenever possible. The basic Filter
+class for Spring is called
 [GenericFilterBean](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/filter/GenericFilterBean.html),
 in the words found in the JavaDoc above:
 
