@@ -106,7 +106,7 @@ console.
 
 ## Step 2: verifying the `x-robot-secret` header
 
-In the filter, grab the value of the `x-robot-header` header, and display it in the log. If the
+In the filter, grab the value of the `x-robot-secret` header, and display it in the log. If the
 secret is not equal to `beep-boop`, reject the request, similar to what we have done in the previous
 filter - maybe change the message to something more "robot-y".
 
