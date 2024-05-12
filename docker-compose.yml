@@ -20,4 +20,4 @@ services:
 
 configs:
   dex_config:
-    file: ./dex.yml
+    file: dex.yml

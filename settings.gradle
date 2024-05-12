@@ -1,0 +1,19 @@
+pluginManagement {
+    plugins {
+        id "java"
+
+        id "org.springframework.boot" version "3.2.5"
+        id "io.spring.dependency-management" version "1.1.4"
+    }
+}
+
+rootProject.name = "spring-architecture-workshop"
+include(
+        "1-base-application",
+        "2-first-filter",
+        "3-authentication",
+        "4-authentication-provider",
+        "5-configurers",
+        "6-post-processing",
+        "7-authorization"
+)
