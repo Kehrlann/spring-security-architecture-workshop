@@ -9,9 +9,6 @@ spring:
     cache: false
 
   security:
-    user:
-      name: user
-      password: password
     oauth2:
       client:
         registration:
