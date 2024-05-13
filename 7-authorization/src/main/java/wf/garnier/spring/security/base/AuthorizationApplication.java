@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class BaseApplication {
+public class AuthorizationApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BaseApplication.class, args);
+		SpringApplication.run(AuthorizationApplication.class, args);
 	}
 
 }
