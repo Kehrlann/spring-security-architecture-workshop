@@ -7,7 +7,6 @@ server:
 spring:
   thymeleaf:
     cache: false
-    prefix: file:src/main/resources/templates/
 
   security:
     user:
