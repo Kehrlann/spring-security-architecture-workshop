@@ -45,6 +45,7 @@ public class SecurityConfiguration {
         }
 
         return filterChainBuilder
+                .addFilterBefore(new RobotAuthenticationFilter(), AuthorizationFilter.class)
                 .build();
     }
 
