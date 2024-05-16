@@ -19,12 +19,7 @@ colorSchema: "light"
 
 ### Daniel Garnier-Moiroux
 
-J-Fall, Ede/Veenendall, 2023-11-08
-
-<!-- 
-presenter notes go here
-TODO: splash image
--->
+Voxxed Brussels, 2024-05-21
 
 ---
 layout: image-right
@@ -36,14 +31,14 @@ class: smaller
 ### Garnier-Moiroux
 <br>
 
-Software Engineer
+Software Engineer @ Broadcom
 
-- <logos-spring-icon /> VMWare+Tanzu+Spring
+- <logos-spring-icon /> Spring + Tanzu
 - <logos-twitter /> @Kehrlann
 - <logos-mastodon-icon /> @Kehrlann@hachyderm.io
 - <logos-firefox /> https://garnier.wf/
 - <logos-github-icon /> github.com/Kehrlann/
-- <fluent-emoji-flat-envelope-with-arrow /> dgarnier@vmware.com
+- <fluent-emoji-flat-envelope-with-arrow /> contact@garnier.wf
 
 ---
 
@@ -571,7 +566,7 @@ layout: default
 - <logos-twitter /> @Kehrlann
 - <logos-mastodon-icon /> @Kehrlann@hachyderm.io
 - <logos-firefox /> https://garnier.wf/
-- <fluent-emoji-flat-envelope-with-arrow /> dgarnier@vmware.com
+- <fluent-emoji-flat-envelope-with-arrow /> contact@garnier.wf
 
 
 ---
