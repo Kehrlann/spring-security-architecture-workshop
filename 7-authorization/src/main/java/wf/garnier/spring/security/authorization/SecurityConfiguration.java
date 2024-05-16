@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -16,6 +17,7 @@ import org.springframework.security.web.access.intercept.AuthorizationFilter;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -25,6 +27,7 @@ public class SecurityConfiguration {
                     authorize.requestMatchers("/css/**").permitAll();
                     authorize.requestMatchers("/error").permitAll();
                     authorize.requestMatchers("/favicon.svg").permitAll();
+                    authorize.requestMatchers("/admin").hasRole("admin");
                     authorize.anyRequest().authenticated();
                 })
                 .formLogin(form -> {
@@ -37,6 +40,11 @@ public class SecurityConfiguration {
                 .addFilterBefore(new ForbiddenFilter(), AuthorizationFilter.class)
                 .addFilterBefore(new RobotAuthenticationFilter(), AuthorizationFilter.class)
                 .authenticationProvider(new DanielAuthenticationProvider())
+                .exceptionHandling(exceptions -> {
+                    exceptions.accessDeniedHandler((request, response, accessDeniedException) -> {
+                       response.sendRedirect("/private");
+                    });
+                })
                 .build();
     }
 
