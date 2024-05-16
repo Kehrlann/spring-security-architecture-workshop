@@ -20,7 +20,6 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.apply(new RobotConfigurer());
         return http
                 .authorizeHttpRequests(authorize -> {
                     authorize.requestMatchers("/").permitAll();
@@ -36,6 +35,7 @@ public class SecurityConfiguration {
                     oidc.defaultSuccessUrl("/private");
                 })
                 .httpBasic(Customizer.withDefaults())
+                .with(new RobotConfigurer(), Customizer.withDefaults())
                 .addFilterBefore(new ForbiddenFilter(), AuthorizationFilter.class)
                 .authenticationProvider(new DanielAuthenticationProvider())
                 .build();
