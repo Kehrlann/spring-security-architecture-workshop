@@ -40,7 +40,6 @@ public class SecurityConfiguration {
                 })
                 .httpBasic(Customizer.withDefaults())
                 .addFilterBefore(new ForbiddenFilter(), AuthorizationFilter.class)
-                .addFilterBefore(new RobotAuthenticationFilter(), AuthorizationFilter.class)
                 .authenticationProvider(new DanielAuthenticationProvider());
 
         // Conditionally enable OAuth2 login
@@ -54,6 +53,7 @@ public class SecurityConfiguration {
         }
 
         return filterChainBuilder
+                .with(new RobotConfigurer(), Customizer.withDefaults())
                 .build();
     }
 

@@ -5,6 +5,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -17,6 +21,12 @@ public class RobotAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String ROBOT_HEADER_NAME = "x-robot-secret";
 
+    private final AuthenticationManager authenticationManager;
+
+    public RobotAuthenticationFilter(AuthenticationManager authManager) {
+        this.authenticationManager = authManager;
+    }
+
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
@@ -28,23 +38,22 @@ public class RobotAuthenticationFilter extends OncePerRequestFilter {
         }
 
         var secret = request.getHeader(ROBOT_HEADER_NAME);
-
-        if (!"beep-boop".equals(secret)) {
-            // These two lines are required to have emojis in your responses.
-            // See ForbiddenFilter for more information.
+        var authRequest = RobotAuthenticationToken.authenticationRequest(secret);
+        try {
+            var auth = authenticationManager.authenticate(authRequest);
+            var newContext = SecurityContextHolder.createEmptyContext();
+            newContext.setAuthentication(auth);
+            SecurityContextHolder.setContext(newContext);
+        } catch (AuthenticationException e) {
             response.setCharacterEncoding(StandardCharsets.UTF_8.name());
             response.setContentType("text/plain;charset=utf-8");
 
             response.setStatus(HttpStatus.FORBIDDEN.value());
-            response.getWriter().write("🤖⛔️ you are not Ms Robot");
-            response.getWriter().close(); // optional
+            response.getWriter().write(e.getMessage());
+            response.getWriter().close();
 
-            // Absolutely make sure you don't call the rest of the filter chain!!
             return;
         }
-        var newContext = SecurityContextHolder.createEmptyContext();
-        newContext.setAuthentication(new RobotAuthenticationToken());
-        SecurityContextHolder.setContext(newContext);
 
         filterChain.doFilter(request, response);
     }
