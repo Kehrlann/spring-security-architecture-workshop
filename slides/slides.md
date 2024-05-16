@@ -59,7 +59,9 @@ layout: section
 
 # Spring Security
 
-# <br>
+<br>
+
+# <v-click>😬</v-click> <v-click>🤯</v-click> <v-click>🤕</v-click> <v-click>😱</v-click> <v-click>😵‍💫</v-click>
 
 ---
 layout: section
@@ -67,31 +69,9 @@ layout: section
 
 # Spring Security
 
-# 😬
+<br>
 
----
-layout: section
----
-
-# Spring Security
-
-# 🤯
-
----
-layout: section
----
-
-# Spring Security
-
-# 😱🤕😵‍💫
-
----
-layout: section
----
-
-# Spring Security
-
-# ❤️
+# ❤️ ❤️ ❤️ ❤️ ❤️
 
 ---
 layout: default
@@ -145,9 +125,11 @@ layout: default
   
 <br>
 
-> It's the first time I give this workshop. Some things may not work. 
+> It's the second time I give this workshop. Some things may not work.
 >
 > Thank you for your understanding 🙇
+>
+> ... and PRs welcome!
 
 ---
 layout: default
