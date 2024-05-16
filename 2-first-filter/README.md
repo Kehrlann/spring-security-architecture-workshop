@@ -19,7 +19,7 @@ dependency in `build.gradle`, and re-use your `application.yml` file from the pr
 As a reminder, you can run the app from the command-line:
 
 ```bash
-./gradlew bootRun
+./gradlew :2-first-filter:bootRun
 ```
 
 You can also run from your favorite IDE.
@@ -35,7 +35,7 @@ With the current setup of the app, you can log-in with:
 ## Step 1: create and register a filter
 
 We will implement an instance of
-[jakarta.servlet.Filter](https://jakarta.ee/specifications/platform/9/apidocs/jakarta/servlet/filter).
+[jakarta.servlet.Filter](https://jakarta.ee/specifications/platform/10/apidocs/jakarta/servlet/filter).
 
 There is a guide in the
 [Spring Security docs](https://docs.spring.io/spring-security/reference/servlet/architecture.html#adding-custom-filter),
