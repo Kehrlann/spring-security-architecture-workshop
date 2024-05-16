@@ -29,7 +29,7 @@ dependency in `build.gradle`, and re-use your `application.yml` file from the pr
 As a reminder, you can run the app from the command-line:
 
 ```bash
-./gradlew bootRun
+./gradlew :3-authentication:bootRun
 ```
 
 You can also run from your favorite IDE.
@@ -37,10 +37,10 @@ You can also run from your favorite IDE.
 With the current setup of the app, you can log-in with:
 
 - Form login:
-  - alice / alice-password
-  - bob / bob-password
+    - alice / alice-password
+    - bob / bob-password
 - Dex
-  - admin@example.com / password
+    - admin@example.com / password
 
 A filter has been registered that blocks requests with a `x-forbidden: true` header, called
 `ForbiddenFilter`. It's a good start to start implementing an authentication filter.
@@ -81,6 +81,7 @@ public class RobotAuthenticationFilter extends OncePerRequestFilter {
 SecurityConfiguration.java:
 
 ```java
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
@@ -197,12 +198,12 @@ The following rules must apply:
    use the simplest thing we can.
 4. Authorities must be a list with only `ROLE_robot` as a value. Note: it could be a list containing
    anything, or even "no authorities" (empty list), but it can't be null.
-   - Authorities represent "high-level permissions" for a user. If you want to learn more, head to
-     the
-     [reference docs](https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html#servlet-authentication-granted-authority)
-   - If you want to implement authorities here, see also the handy
-     [AuthorityUtils](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/core/authority/AuthorityUtils.html)
-     utility class
+    - Authorities represent "high-level permissions" for a user. If you want to learn more, head to
+      the
+      [reference docs](https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html#servlet-authentication-granted-authority)
+    - If you want to implement authorities here, see also the handy
+      [AuthorityUtils](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/core/authority/AuthorityUtils.html)
+      utility class
 
 Additionally, if you look at the documentation of `AbstractAuthenticationToken`, it is recommended
 that subclasses be immutable. Try and make your implementation immutable.
@@ -323,6 +324,20 @@ http :8080/private x-robot-secret:beep-boop
 # ...
 ```
 
+If you supply an incorrect secret though, you'll see an error message:
+
+```shell
+curl localhost:8080/private -H "x-robot-secret: beep-beep"
+# ⛔️🤖 You are not Ms Robot!
+```
+
+Or:
+
+```shell
+http :8080/private x-robot-secret:beep-beep
+# ...
+```
+
 ## Step 4: restoring the other flows
 
 Great: we have fulfilled the request from the Ops team, and we have a robot account but if you have
@@ -381,7 +396,6 @@ Now try the full behavior again:
 2. `curl localhost:8080/private -H "x-robot-secret: WHAT-IS-THE-SECRET"` should fail
 3. Normal, browser-based flows should still function as usual
 
-
 ## Closing out
 
 We have wired a filter to update the security context and authenticate an entity. You now have the
@@ -391,6 +405,5 @@ concepts, but the gist of it is those two classes: `Filter` and `Authentication`
 In the next module, we'll look at shortcuts to handle certain types of authentications flows without
 having to write a filter, and to overload existing Spring Security authentication flows.
 
-[^1]:
-    Don't do that in prod. Please. Use an existing protocol, e.g. OAuth2, or come up with secure
-    ways to expose your applications' health. But we're in the lab now, so `#yolo` 🤘
+[^1]: Don't do that in prod. Please. Use an existing protocol, e.g. OAuth2, or come up with secure
+ways to expose your applications' health. But we're in the lab now, so `#yolo` 🤘
