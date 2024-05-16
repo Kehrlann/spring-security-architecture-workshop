@@ -200,13 +200,13 @@ As a developer, you provide code to validate credentials, only.
 
 There are other benefits to using the `AuthenticationProvider` interface. For example, you get
 [Observability](https://docs.spring.io/spring-security/reference/servlet/integrations/observability.html#observability-tracing)
-out of the box. Some extra protection measures, such as credential erasures. You also get
+out of the box. Some extra protection measures, such as credential erasure. You also get
 [authentication events](https://docs.spring.io/spring-security/reference/servlet/authentication/events.html).
 
 Register a new `@Bean` providing an `ApplicationListener<AuthenticationSuccessEvent>`, that logs the
 name and the class of the `Authentication` object when someone logs in. You can add it in the
 `SecurityConfiguration`, for example. Feel free to use `@EventListener` instead if you are more
-familiar with is[^2].
+familiar with it[^2].
 
 ---
 
