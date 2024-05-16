@@ -499,12 +499,6 @@ layout: section
 layout: section
 ---
 
-# Authorization
-
----
-layout: section
----
-
 ## _Module 7_
 
 # Authorization
