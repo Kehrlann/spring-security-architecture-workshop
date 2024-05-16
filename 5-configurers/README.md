@@ -29,7 +29,7 @@ dependency in `build.gradle`, and re-use your `application.yml` file from the pr
 As a reminder, you can run the app from the command-line:
 
 ```bash
-./gradlew bootRun
+./gradlew :5-configurers:bootRun
 ```
 
 You can also run from your favorite IDE.
@@ -37,10 +37,10 @@ You can also run from your favorite IDE.
 With the current setup of the app, you can log-in with:
 
 - Form login:
-  - alice / alice-password
-  - bob / bob-password
+    - alice / alice-password
+    - bob / bob-password
 - Dex
-  - admin@example.com / password
+    - admin@example.com / password
 
 A filter has been registered that blocks requests with a `x-forbidden: true` header, called
 `ForbiddenFilter`.
@@ -64,14 +64,14 @@ an authentication provider.
 Refactor the `RobotAuthenticationToken`, so that there are two possible states:
 
 1. An "authenticated" state:
-   - `isAuthenticated()` must return true
-   - `getCredentials()` must return null
-   - it must have the `ROLE_robot` authority
+    - `isAuthenticated()` must return true
+    - `getCredentials()` must return null
+    - it must have the `ROLE_robot` authority
 1. An "unauthenticated" state (new):
-   - `isAuthenticated()` must return false
-   - `getCredentials()` must return a string, that will passed in when creating the object - it will
-     contain the "robot secret"
-   - it must have no authorities
+    - `isAuthenticated()` must return false
+    - `getCredentials()` must return a string, that will passed in when creating the object - it will
+      contain the "robot secret"
+    - it must have no authorities
 
 Optional recommendations - don't follow those if you don't wan't to:
 
@@ -292,13 +292,14 @@ authentication manager, that's registered with the filter chain. In order to get
 
 The filter chain has its own mini-version of a Spring "Application Context" - you can access "shared
 objects" in the `HttpSecurity` builder object. To access those, one must use a
-[custom DL](https://docs.spring.io/spring-security/reference/servlet/configuration/java.html#jc-custom-dsls).
+[custom DSL](https://docs.spring.io/spring-security/reference/servlet/configuration/java.html#jc-custom-dsls).
+
 As you can see in the link above, those are subclasses of `AbstractHttpConfigurer<T, HttpSecurity>`,
 and should override two methods - `init` and `configure`. Those classes are commonly referred to as
 "configurers", and are what you register when you call `.formLogin()` or `.oauth2Login()` on
 `HttpSecurity`.
 
-Spring Security will call the `init` method of all registered configurers in sequence, and the call
+Spring Security will call the `init` method of all registered configurers in sequence, and then call
 the `configure` method. The `init` method will be used to register all elements that do not require
 dependencies, typically: `AuthenticationProvider`s. The `configure` method will be used to register
 elements that have dependencies.
@@ -316,9 +317,8 @@ In the `init` method, register the `AuthenticationProvider`. In the `configure` 
 `RobotAuthenticationFilter`, pass it the `AuthenticationManager`, and the put the filter in the
 chain (you will need to update the Filter so that you can pass the auth manager in the constructor).
 
-Finally, update your security configuration, by removing the direct reference to the filter, an
-`.apply()`'ing your newly created configurer. For historical reasons, you must call `.apply()`
-outside of the fluent API.
+Finally, update your security configuration, by removing the direct reference to the filter, and using `.with()` to
+register your newly created configurer.
 
 That's quite a lot!
 
@@ -369,8 +369,10 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.apply(new RobotConfigurer());
-        return http. //...
+        return http
+                //...
+                .with(new RobotConfigurer(), Customizer.withDefaults())
+                .build();
     }
 }
 ```
