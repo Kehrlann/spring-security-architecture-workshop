@@ -5,13 +5,29 @@ import org.springframework.security.core.authority.AuthorityUtils;
 
 public class RobotAuthenticationToken extends AbstractAuthenticationToken {
 
-    public RobotAuthenticationToken() {
+    private final String secret;
+
+    private RobotAuthenticationToken() {
         super(AuthorityUtils.createAuthorityList("ROLE_robot"));
+        this.secret = null;
+    }
+
+    private RobotAuthenticationToken(String secret) {
+        super(AuthorityUtils.NO_AUTHORITIES);
+        this.secret = secret;
+    }
+
+    public static RobotAuthenticationToken authenticated() {
+        return new RobotAuthenticationToken();
+    }
+
+    public static RobotAuthenticationToken authenticationRequest(String secret) {
+        return new RobotAuthenticationToken(secret);
     }
 
     @Override
     public boolean isAuthenticated() {
-        return true;
+        return secret == null;
     }
 
     @Override
@@ -20,8 +36,8 @@ public class RobotAuthenticationToken extends AbstractAuthenticationToken {
     }
 
     @Override
-    public Object getCredentials() {
-        return null;
+    public String getCredentials() {
+        return secret;
     }
 
     @Override
