@@ -43,7 +43,7 @@ SSO solution back in if you feel that's better. You can always log in in with De
 As a reminder, you can run the app from the command-line:
 
 ```bash
-./gradlew bootRun
+./gradlew :7-authorization:bootRun
 ```
 
 You can also run from your favorite IDE.
@@ -54,7 +54,7 @@ Logout, and log back in using SSO. Navigate to the same pages.
 
 ## Step 1: simple HTTP security
 
-We want users with the role `admin`, and only `admin`, to be able to access the `admin` page.
+We want users with the role `admin` to be able to access the `admin` page, and ONLY users with that role.
 
 Take a look at the reference documentation on
 [Authorizing an Endpoint](https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html#authorizing-endpoints),
@@ -120,6 +120,7 @@ allowed to call the method. For this, you should leverage the `UsernameAuthoriza
 ConferenceService.java:
 
 ```java
+
 @Component
 public class ConferenceService {
 
@@ -134,6 +135,7 @@ public class ConferenceService {
 SecurityConfiguration.java:
 
 ```java
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity // <-- don't forget to enable method security
@@ -160,14 +162,47 @@ each individual controller.
 
 Putting them in deep down in your service code may be surprising to discover. However, it provides
 another level of "defense in depth", to make sure core methods have access control. There is no "one
-size fits" all.
+size fits all".
 
 ## (Optional) Step 2: don't blow up when bob navigates to `/admin`
 
-Instead, gracefully handle the exception and don't display the conferences.
+Instead, gracefully handle the exception and don't display the conferences on the page.
 
 This has nothing to do with Spring Security. It could make you think of other ways to handle
 "securing endpoints" that do not leverage Spring Security, but rather application logic...
+
+On the other hand, if you want to handle things with redirects to another page, you can configure Spring Security.
+Take a look
+at [Exception Handling](https://docs.spring.io/spring-security/reference/servlet/architecture.html#servlet-exceptiontranslationfilter) 
+in the reference docs. You can update your security configuration like so:
+
+---
+
+<details>
+
+<summary>📖 SecurityConfiguration.java</summary>
+
+```java
+public class SecurityConfiguration {
+
+    // ...
+
+   @Bean
+   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+      return http
+              // ...
+              .exceptionHandling(exceptions -> {
+                 exceptions.accessDeniedHandler((request, response, accessDeniedException) -> {
+                    response.sendRedirect("/private");
+                 });
+              })
+              .build();
+   }
+
+    // ...
+}
+```
+
 
 ## Step 3: "modern" HTTP authorization
 
