@@ -46,7 +46,7 @@ public class RobotAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } catch (AuthenticationException exception) {
             // These two lines are required to have emojis in your responses.
-            // See VerbodenFilter for more information.
+            // See ForbiddenFilter for more information.
             response.setCharacterEncoding(StandardCharsets.UTF_8.name());
             response.setContentType("text/plain;charset=utf-8");
 

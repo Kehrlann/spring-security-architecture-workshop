@@ -49,8 +49,8 @@ With the current setup of the app, you can log-in with:
 - Dex
   - admin@example.com / password
 
-A filter has been registered that blocks requests with a `x-verboden: waar` header, called
-`VerbodenFilter`.
+A filter has been registered that blocks requests with a `x-forbidden: true` header, called
+`ForbiddenFilter`.
 
 A robot authentication has been implemented, you can now obtain private pages by passing the
 `x-robot-secret: beep-boop` header, like so:

@@ -30,7 +30,7 @@ public class SecurityConfiguration {
                 .oauth2Login(oidc -> {
                     oidc.defaultSuccessUrl("/private");
                 })
-                .addFilterBefore(new VerbodenFilter(), AuthorizationFilter.class)
+                .addFilterBefore(new ForbiddenFilter(), AuthorizationFilter.class)
                 .build();
     }
 

@@ -35,7 +35,7 @@ public class SecurityConfiguration {
                     oidc.defaultSuccessUrl("/private");
                 })
                 .httpBasic(Customizer.withDefaults())
-                .addFilterBefore(new VerbodenFilter(), AuthorizationFilter.class)
+                .addFilterBefore(new ForbiddenFilter(), AuthorizationFilter.class)
                 .addFilterBefore(new RobotAuthenticationFilter(), AuthorizationFilter.class)
                 .authenticationProvider(new DanielAuthenticationProvider())
                 .build();

@@ -51,7 +51,7 @@ in the words found in the JavaDoc above:
 
 Your task is to implement a Filter that logs a simple message in the console when it is invoked, and
 then lets the request proceed as usual. Use a Spring-based filter class as the base class. You can
-call this Filter `VerbodenFilter`, we will be using it to mark certain requests as "Forbidden".
+call this Filter `ForbiddenFilter`, we will be using it to mark certain requests as "Forbidden".
 
 Notice, in the JavaDoc for `GenericFilterBean` above, that there are "Direct Known Subclasses".
 Maybe you should use one of those? (Hint: use the most "popular" subtype, that is, the one with the
@@ -61,17 +61,17 @@ most subclasses.). Don't forget to call back to the FilterChain!
 
 <details>
 
-<summary>📖 VerbodenFilter.java</summary>
+<summary>📖 ForbiddenFilter.java</summary>
 
 ```java
-public class VerbodenFilter extends OncePerRequestFilter {
+public class ForbiddenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-        System.out.println("~~~~> 👋 Hello from VerbodenFilter!");
+        System.out.println("~~~~> 👋 Hello from ForbiddenFilter!");
         filterChain.doFilter(request, response);
     }
 
@@ -105,7 +105,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 // ...
-                .addFilterBefore(new VerbodenFilter(), AuthorizationFilter.class)
+                .addFilterBefore(new ForbiddenFilter(), AuthorizationFilter.class)
                 .build();
     }
 
@@ -124,13 +124,12 @@ that's because a page of the app requests the CSS file as well as the favicon.
 
 We have a functioning filter, let's turn it into something useful!
 
-We now want to check whether a request is sent with the header `x-verboden` set to `waar` (or
-`x-forbidden` set to `true` if you prefer English!). This is not a real use-case, but you could
-imagine a filter that checks the `User-Agent` header and only allows some browsers to view your app.
+We now want to check whether a request is sent with the header `x-forbidden` set to `true`. This is not a real use-case, 
+but you could imagine a filter that checks the `User-Agent` header and only allows some browsers to view your app.
 
 Using your IDE, try to find how you can get the value for that header in the request.
 
-Once you have the value, when it is set to `waar` / `true`, we want to reject the request. To reject
+Once you have the value, when it is set to `true`, we want to reject the request. To reject
 a request is to send a response that says "nope that request you just sent me is not allowed". What
 you need to do is:
 
@@ -145,17 +144,17 @@ you need to do is:
 
 <details>
 
-<summary>📖 VerbodenFilter.java</summary>
+<summary>📖 ForbiddenFilter.java</summary>
 
 ```java
-public class VerbodenFilter extends OncePerRequestFilter {
+public class ForbiddenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-        if ("waar".equalsIgnoreCase(request.getHeader("x-verboden"))) {
+        if ("true".equalsIgnoreCase(request.getHeader("x-forbidden"))) {
             // These two lines are required to have emojis in your responses.
             // - Character encoding needs to be set before you write to the response.
             // - Content-Type is for browser-based interactions
@@ -164,7 +163,7 @@ public class VerbodenFilter extends OncePerRequestFilter {
             response.setContentType("text/plain;charset=utf-8");
 
             response.setStatus(HttpStatus.FORBIDDEN.value());
-            response.getWriter().write("⛔⛔⛔⛔️ het is verboden");
+            response.getWriter().write("⛔⛔⛔⛔️ this is forbidden");
             response.getWriter().close(); // optional
 
             // Absolutely make sure you don't call the rest of the filter chain!!
@@ -182,7 +181,7 @@ public class VerbodenFilter extends OncePerRequestFilter {
 ---
 
 Visit the page in your browser. It should still work as before. If it doesn't, make sure you handle
-the case where the header is absent: your browser is not sending this `x-verboden` header we
+the case where the header is absent: your browser is not sending this `x-forbidden` header we
 invented!
 
 Now let's check that the filter does work, that we get a 403 and a response body.
@@ -190,14 +189,14 @@ Now let's check that the filter does work, that we get a 403 and a response body
 With curl:
 
 ```shell
-curl -v localhost:8080 -H "x-verboden: waar"
+curl -v localhost:8080 -H "x-forbidden: true"
 # *   Trying 127.0.0.1:8080...
 # * Connected to localhost (127.0.0.1) port 8080 (#0)
 # > GET / HTTP/1.1
 # > Host: localhost:8080
 # > User-Agent: curl/8.1.2
 # > Accept: */*
-# > x-verboden: waar 💡
+# > x-forbidden: true 💡
 # >
 # < HTTP/1.1 403 💡
 # < X-Content-Type-Options: nosniff
@@ -211,13 +210,13 @@ curl -v localhost:8080 -H "x-verboden: waar"
 # < Date: Tue, 24 Oct 2023 20:34:39 GMT
 # <
 # * Connection #0 to host localhost left intact
-# ⛔⛔⛔⛔️ het is verboden 💡
+# ⛔⛔⛔⛔️ this is forbidden 💡
 ```
 
 With httpie:
 
 ```shell
-http :8080 x-verboden:waar
+http :8080 x-forbidden:true
 # HTTP/1.1 403
 # Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 # Connection: keep-alive
@@ -231,7 +230,7 @@ http :8080 x-verboden:waar
 # X-Frame-Options: DENY
 # X-XSS-Protection: 0
 #
-# ⛔⛔⛔⛔️ het is verboden
+# ⛔⛔⛔⛔️ this is forbidden
 ```
 
 ## Optional

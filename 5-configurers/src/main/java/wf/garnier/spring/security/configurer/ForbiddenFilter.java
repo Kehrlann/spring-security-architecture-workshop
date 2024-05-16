@@ -11,14 +11,14 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class VerbodenFilter extends OncePerRequestFilter {
+public class ForbiddenFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-        if ("waar".equalsIgnoreCase(request.getHeader("x-verboden"))) {
+        if ("true".equalsIgnoreCase(request.getHeader("x-forbidden"))) {
             // These two lines are required to have emojis in your responses.
             // - Character encoding needs to be set before you write to the response.
             // - Content-Type is for browser-based interactions
@@ -27,7 +27,7 @@ public class VerbodenFilter extends OncePerRequestFilter {
             response.setContentType("text/plain;charset=utf-8");
 
             response.setStatus(HttpStatus.FORBIDDEN.value());
-            response.getWriter().write("⛔⛔⛔⛔️ het is verboden");
+            response.getWriter().write("⛔⛔⛔⛔️ this is forbidden");
             response.getWriter().close(); // optional
 
             // Absolutely make sure you don't call the rest of the filter chain!!

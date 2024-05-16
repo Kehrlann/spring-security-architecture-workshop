@@ -42,8 +42,8 @@ With the current setup of the app, you can log-in with:
 - Dex
   - admin@example.com / password
 
-A filter has been registered that blocks requests with a `x-verboden: waar` header, called
-`VerbodenFilter`. It's a good start to start implementing an authentication filter.
+A filter has been registered that blocks requests with a `x-forbidden: true` header, called
+`ForbiddenFilter`. It's a good start to start implementing an authentication filter.
 
 ## Step 1: create and register a filter
 
@@ -128,7 +128,7 @@ public class RobotAuthenticationFilter extends OncePerRequestFilter {
 
         if (!"beep-boop".equals(secret)) {
             // These two lines are required to have emojis in your responses.
-            // See VerbodenFilter for more information.
+            // See ForbiddenFilter for more information.
             response.setCharacterEncoding(StandardCharset.UTF_8.name());
             response.setContentType("text/plain;charset=utf-8");
 
