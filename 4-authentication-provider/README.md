@@ -14,7 +14,7 @@ Our app is getting more and more secure. I mean, a `beep-boop` secret? Go and ha
 
 But it is also gaining traction, and so now we need an admin to. You know. Administer. Things. And
 we've on-boarded this lovely fellow named Daniel, kind, rigorous, competent... But he has a bad
-memory. He can't even remember is password.
+memory. He can't even remember his password.
 
 So we will implement a special security measure, just for him - when someone tries to log in, and
 their username is `daniel` ... don't check the password, just log them in[^1].
@@ -36,7 +36,7 @@ dependency in `build.gradle`, and re-use your `application.yml` file from the pr
 As a reminder, you can run the app from the command-line:
 
 ```bash
-./gradlew bootRun
+./gradlew :4-authentication-provider:bootRun
 ```
 
 You can also run from your favorite IDE.
@@ -44,10 +44,10 @@ You can also run from your favorite IDE.
 With the current setup of the app, you can log-in with:
 
 - Form login:
-  - alice / alice-password
-  - bob / bob-password
+    - alice / alice-password
+    - bob / bob-password
 - Dex
-  - admin@example.com / password
+    - admin@example.com / password
 
 A filter has been registered that blocks requests with a `x-forbidden: true` header, called
 `ForbiddenFilter`.
@@ -58,18 +58,21 @@ A robot authentication has been implemented, you can now obtain private pages by
 
 ## Step 1: create and register an authentication provider
 
-No filters this time - extracting the credentials from the username-password login is already
-handled by Spring Security, here the `UsernamePasswordAuthenticationFilter`.
+No need to implement a `Filter` this time - extracting the credentials from the username-password login is already
+handled by Spring Security.
 
-We will implement the
-[AuthenticationProvider](https://docs.spring.io/spring-security/site/docs/6.1.5/api/org/springframework/security/authentication/AuthenticationProvider.html)
+> 🧑‍🔬 Converting the credentials from an HTTP request body to an `Authentication`
+> object happens in `UsernamePasswordAuthenticationFilter`.
+
+Instead, we will implement the
+[AuthenticationProvider](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/authentication/AuthenticationProvider.html)
 interface. Call it `DanielAuthenticationProvider` and make sure it only support
 `UsernamePasswordAuthenticationToken` classes - this avoids triggering this provider on non
 username-password flows, e.g. on OAuth2 login or our custom Robot login.
 
 Then, in the `authenticate` method, check the name of the incoming authentication. If it's daniel,
 return an "authenticated" version of
-[UsernamePasswordAuthenticationToken](https://docs.spring.io/spring-security/site/docs/6.1.5/api/org/springframework/security/authentication/UsernamePasswordAuthenticationToken.html).
+[UsernamePasswordAuthenticationToken](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/authentication/UsernamePasswordAuthenticationToken.html).
 Look up the javadoc, there are useful static methods for creating what you want. I recommend you use
 the `User` class as the principal (but it can be any object)! You should have built users in your
 `SecurityConfiguration`, so you could do the same here. Don't worry too much about required
@@ -77,7 +80,7 @@ passwords, you can put anything, it will be erased at login time.
 
 If the username is not Daniel, you want to delegate to the default authentication provider, in this
 case it's a
-[DaoAuthenticationProvider](https://docs.spring.io/spring-security/site/docs/6.1.5/api/org/springframework/security/authentication/dao/DaoAuthenticationProvider.html)
+[DaoAuthenticationProvider](https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/authentication/dao/DaoAuthenticationProvider.html)
 that Spring Security creates for you. Remember, you do not need to be explicit about calling another
 auth provider, you should let the framework do the heavy lifting.
 
@@ -118,6 +121,7 @@ public class DanielAuthenticationProvider implements AuthenticationProvider {
 SecurityConfiguration.java:
 
 ```java
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
@@ -155,6 +159,7 @@ supports http basic out of the box, activate it in the filter chain with
 `.httpBasic(Customizer.withDefaults())`.
 
 ```java
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
@@ -195,13 +200,13 @@ As a developer, you provide code to validate credentials, only.
 
 There are other benefits to using the `AuthenticationProvider` interface. For example, you get
 [Observability](https://docs.spring.io/spring-security/reference/servlet/integrations/observability.html#observability-tracing)
-out of the box. Some extra protection mesaures, such as credential erasures. You also get
+out of the box. Some extra protection measures, such as credential erasures. You also get
 [authentication events](https://docs.spring.io/spring-security/reference/servlet/authentication/events.html).
 
 Register a new `@Bean` providing an `ApplicationListener<AuthenticationSuccessEvent>`, that logs the
 name and the class of the `Authentication` object when someone logs in. You can add it in the
 `SecurityConfiguration`, for example. Feel free to use `@EventListener` instead if you are more
-familiar with it[^1].
+familiar with is[^2].
 
 ---
 
@@ -210,6 +215,7 @@ familiar with it[^1].
 <summary>📖 SecurityConfiguration.java</summary>
 
 ```java
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
@@ -254,6 +260,7 @@ reactive types instead, and its own reactive `AuthenticationManager`.
 In the next module, we'll dive deeper into overloading existing behavior, rather than implementing
 stuff from scratch.
 
-[^1]:
-    To learn more about Spring Framework eventing support, check out the
-    [reference docs](https://docs.spring.io/spring-framework/reference/core/beans/context-introduction.html#context-functionality-events)
+[^1]: Needless to say, doing this in a real app is a certified Very Bad Idea™. Use proper security. Don't hire Daniel,
+or at least make him log in with a passkey, yubikey or something.
+[^2]: To learn more about Spring Framework eventing support, check out the
+[reference docs](https://docs.spring.io/spring-framework/reference/core/beans/context-introduction.html#context-functionality-events)
