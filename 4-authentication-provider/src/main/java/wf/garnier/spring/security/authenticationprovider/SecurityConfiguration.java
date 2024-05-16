@@ -1,9 +1,13 @@
 package wf.garnier.spring.security.authenticationprovider;
 
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationListener;
 import java.util.Optional;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -46,6 +50,8 @@ public class SecurityConfiguration {
         }
 
         return filterChainBuilder
+                .httpBasic(Customizer.withDefaults())
+                .authenticationProvider(new DanielAuthenticationProvider())
                 .build();
     }
 
@@ -59,5 +65,18 @@ public class SecurityConfiguration {
                 .password("bob-password")
                 .build();
         return new InMemoryUserDetailsManager(alice, bob);
+    }
+
+    @Bean
+    public ApplicationListener<AuthenticationSuccessEvent> listener() {
+        var logger = LoggerFactory.getLogger("🔐 custom-security-logger");
+
+        return event -> {
+            var auth = event.getAuthentication();
+            logger.info(
+                    "[{}] logged in as [{}]",
+                    auth.getName(),
+                    auth.getClass().getSimpleName());
+        };
     }
 }
