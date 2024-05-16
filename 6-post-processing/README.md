@@ -16,10 +16,10 @@ Subclassing is sometimes impossible because some Spring Security classes are sti
 `AuthorizedClientServiceOAuth2AuthorizedClientManager`. Another problem with subclasses is that you
 would have to think about all the dependencies of those classes and figure out how they should be
 set up. For example, the authentication provider used for username/password login is
-`DaoAuthenticationProvider`, which extends `AbstractUserDetailsAuthenticationProvider`, they have a
+`DaoAuthenticationProvider`, which extends `AbstractUserDetailsAuthenticationProvider`, it has a
 total of 11 private fields. That's a lot to think about!
 
-Much easier is to do composition - you create a subclass that implements the correct interface, grab
+Much easier is to do composition - you create a class that implements the correct interface, grab
 whatever Spring Security has wired in for you, and do pre or post-processing in addition to what the
 base class does. For example, with our `DaoAuthenticationProvider` above:
 
@@ -75,7 +75,7 @@ So you need Docker and docker-compose.
 As a reminder, you can run the app from the command-line:
 
 ```bash
-./gradlew bootRun
+./gradlew :6-post-processing:bootRun
 ```
 
 You can also run from your favorite IDE.
@@ -99,8 +99,9 @@ The short name for OpenID Connect is `oidc`.
 You could look through the codes, or take a look at the Spring Security reference docs, in
 [OAuth2 Login Advanced configuration](https://docs.spring.io/spring-security/reference/servlet/oauth2/login/advanced.html).
 
-The solutions below will show you how to find it by looking at the code. Try and find by yourself
-before looking at the solutions, or at the next section.
+The solutions below will show you how to find the extension classes by looking at the Spring Security source code. Try
+and find by yourself before looking at the solutions, or at the next section. It is ok to look for a bit, and then open
+Step 1, which will give you the first "step" or "hint" at finding the extension point.
 
 <details>
 <summary>📖 Step 1</summary>
@@ -134,26 +135,10 @@ as that the auth provider that deals with OpenID Connect.
 </details>
 
 <details>
-<summary>📖 Step 4</summary>
-
-You'll find two `AuthenticationProvider`s:
-
-- `OAuth2LoginAuthenticationProvider`
-- `OidcAuthorizationCodeAuthenticationProvider`
-
-Notice how they are customized with calling `.setXXX()` methods - you don't want to understand that
-logic, you trust Spring Security to do The Right Thing™.
-
-As mentioned above, you want to take a closer look at `OidcAuthorizationCodeAuthenticationProvider`,
-as that the auth provider that deals with OpenID Connect. That's the behavior we want to extend!
-
-</details>
-
-<details>
 <summary>📖 The real implementation</summary>
 
-Read the javadoc carefully. You should find that loading the user and its attributes, including the
-e-mail, is done through an `OidcUserService`.
+Read the `OidcAuthorizationCodeAuthenticationProvider` javadoc carefully. You should find that loading the user and its
+attributes, including the e-mail, is done through an `OidcUserService`.
 
 </details>
 
@@ -168,8 +153,8 @@ Implement a `CustomOidcAuthenticationProvider`, using the delegate pattern shown
 introduction, wrapping the `OidcAuthorizationCodeAuthenticationProvider`. Notice which type of
 `Authentication` this provider returns, and find out how to find the e-mail. Upon successful
 authentication, it checks the user's e-mail and throws an `LockedException` when the domain does not
-match `@corp.example.com`, containing a nice message. It's not the correct exception type, but it
-will do.
+match `@corp.example.com`, containing a nice message. It is not the most descriptive exception - you may want to
+implement your own `AuthenticationException`, and call it `InvalidEmailDomainException` or something similar.
 
 ---
 
