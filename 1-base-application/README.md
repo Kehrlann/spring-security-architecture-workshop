@@ -25,10 +25,11 @@ controller, and a few templates. Take a look at the `GreetingsController` and no
 - `/private`: the private page
 
 For now, there is no security, so run the application and navigate to the public page. You can run
-the application through your favorite IDE, or through the command-line using gradle:
+the application through your favorite IDE, or through the command-line using gradle. For example, on
+Linux or Mac, from the root directory of the project:
 
 ```bash
-./gradlew bootRun
+./gradlew :1-first-application:bootRun
 ```
 
 The app will run locally, on port 8080: http://localhost:8080/
@@ -129,22 +130,27 @@ section in the Spring Security docs -
 We will create a configuration class with a SecurityFilterChain bean:
 
 ```java
+
 @Configuration
 @EnableWebSecurity
 class SecurityConfig {
 
-	@Bean
-	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		return http
-				.authorizeHttpRequests(
-						authorizeHttp -> {
+    @Bean
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .authorizeHttpRequests(
+                        authorizeHttp -> {
                             // Here, use authorizeHttp to make "/" public and "/private" private
+                            //
                             // Take a look at the Spring Security docs for this:
                             // https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html#authorize-requests
-						}
-				)
-				.build();
-	}
+                            //
+                            // Use the "secure by default" approach: only make public what should be public,
+                            // and mark EVERYTHING ELSE as private.
+                        }
+                )
+                .build();
+    }
 }
 ```
 
@@ -153,13 +159,13 @@ You may need to restart your application when adding this class.
 Once this is done, verify that:
 
 1. The public page is accessible: http://localhost:8080/
-   1. If styling seems to be missing ... make sure the CSS, hosted under `/css/`, is accessible by
-      anyone
-   1. Open the network tab in your browser. Are there other failing requests? Fix those too.
+    1. If styling seems to be missing ... make sure the CSS, hosted under `/css/`, is accessible by
+       anyone
+    1. Open the network tab in your browser. Are there other failing requests? Fix those too.
 1. The private page is not accessible: http://localhost:8080/private
-   1. If you get a blank page, take a look at the network tab, and see that you are getting an
-      `HTTP - 403 forbidden` response. To re-enable the Spring whitelabel error page, make sure the
-      `/error` endpoint is also accessible.
+    1. If you get a blank page, take a look at the network tab, and see that you are getting an
+       `HTTP - 403 forbidden` response. To re-enable the Spring whitelabel error page, make sure the
+       `/error` endpoint is also accessible.
 
 ---
 
@@ -168,6 +174,7 @@ Once this is done, verify that:
 <summary>📖 Full configuration</summary>
 
 ```java
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
@@ -209,6 +216,7 @@ Use the most basic, default configuration.
 <summary>📖 Form login enabled</summary>
 
 ```java
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
@@ -246,6 +254,7 @@ the form login customizations through your editor.
 <summary>📖 Redirect to the private page on successful login</summary>
 
 ```java
+
 @Bean
 public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     return http
@@ -277,6 +286,7 @@ section of the Spring Security docs.
 <summary>📖 Add `alice` and `bob`</summary>
 
 ```java
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
@@ -334,14 +344,15 @@ Instead we'll inject an `org.springframework.security.core.Authentication` argum
 controller method, like so:
 
 ```java
+
 @Controller
 class GreetingsController {
 
-	@GetMapping("/private")
-	public String privatePage(Authentication authentication, Model model) {
-		model.addAttribute("name", getName());
-		return "private";
-	}
+    @GetMapping("/private")
+    public String privatePage(Authentication authentication, Model model) {
+        model.addAttribute("name", getName());
+        return "private";
+    }
 
 }
 ```
@@ -356,22 +367,23 @@ How can you obtain the username, and display it? Change the `getName()` method t
 <summary>📖 Display username</summary>
 
 ```java
+
 @Controller
 class GreetingsController {
-	@GetMapping("/")
-	public String publicPage() {
-		return "public";
-	}
+    @GetMapping("/")
+    public String publicPage() {
+        return "public";
+    }
 
-	@GetMapping("/private")
-	public String privatePage(Authentication authentication, Model model) {
-		model.addAttribute("name", getName(authentication));
-		return "private";
-	}
+    @GetMapping("/private")
+    public String privatePage(Authentication authentication, Model model) {
+        model.addAttribute("name", getName(authentication));
+        return "private";
+    }
 
-	private static String getName(Authentication authentication) {
-		return authentication.getName();
-	}
+    private static String getName(Authentication authentication) {
+        return authentication.getName();
+    }
 
 }
 ```
@@ -439,6 +451,7 @@ oauth2 login in your `SecurityConfig`.
 <summary>📖 Update `SecurityConfig` with `oauth2login`</summary>
 
 ```java
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
@@ -463,18 +476,10 @@ If you start your application, this should fail because Spring Boot cannot find 
 `ClientRegistration`. There are three options for creating a `ClientRegistration`, depending on
 which identity provider you would like to use.
 
----
+### (Option 1) Using Dex, locally
 
-### (Option 1) Using Google
-
-One of the "easy" providers is Google, as it comes pre-configured in Spring Security and has
-[a section of the reference doc using Google as an example](https://docs.spring.io/spring-security/reference/servlet/oauth2/login/core.html#oauth2login-sample-initial-setup).
-
----
-
-<details>
-
-<summary>📖 Update application.yml</summary>
+For the application to boot, we need to register an OAuth2 Client. To point at Dex, you can add the following to the
+Spring Boot properties:
 
 ```yaml
 spring:
@@ -484,20 +489,21 @@ spring:
     oauth2:
       client:
         registration:
-          google:
-            client-id: <client-id> # copied when you created your Google client
-            client-secret: <client-secret> # copied when you created your Google client
+          dex:
+            client-id: base-client
+            client-secret: base-secret
+            client-name: Login with Dex
+            scope:
+              - openid
+              - email
+        provider:
+          dex:
+            issuer-uri: http://localhost:5556
 ```
 
-</details>
+Where does this `http://localhost:5556` come from?
 
----
-
-Try logging in into your with your Google credentials now. It should work.
-
-### (Option 2) Using Dex, locally
-
-You may notice that there is a `docker-compose.yml` file in the root of this directory, which
+You may notice that there is a `docker-compose.yml` file in the root of the project, which
 launches `dex`. You could run it manually by doing `docker-compose up` or `docker-compose up -d` to
 launch it in the background.
 
@@ -532,8 +538,24 @@ Then run your app, and verify that dex is running by either doing `docker ps` or
 Configuration Discovery endpoint, http://localhost:5556/.well-known/openid-configuration, which
 should return an HTTP 200 with a valid JSON response.
 
-Then, you need to make this a Spring Security `ClientRegistration`. You can achieve that through
-Spring Boot properties:
+The values in your Spring Boot configuration, such as `client-id` and `client-secret`, are all taken from the Dex
+configuration, in `dex.yml`, except for the `scope` which comes from the openid specification.
+
+The username / password you will use to log in using this provider is `admin@example.com` /
+`password`.
+
+---
+
+### (Option 2) Using Google
+
+One of the "easy" providers is Google, as it comes pre-configured in Spring Security and has
+[a section of the reference doc using Google as an example](https://docs.spring.io/spring-security/reference/servlet/oauth2/login/core.html#oauth2login-sample-initial-setup).
+
+---
+
+<details>
+
+<summary>📖 Update application.yml</summary>
 
 ```yaml
 spring:
@@ -543,23 +565,16 @@ spring:
     oauth2:
       client:
         registration:
-          dex:
-            client-id: base-client
-            client-secret: base-secret
-            client-name: Login with Dex
-            scope:
-              - openid
-              - email
-        provider:
-          dex:
-            issuer-uri: http://localhost:5556
+          google:
+            client-id: <client-id> # copied when you created your Google client
+            client-secret: <client-secret> # copied when you created your Google client
 ```
 
-The values above are all taken from the Dex configuration, in `dex.yml`, except for the `scope`
-which comes from the openid specification.
+</details>
 
-The username / password you will use to log in using this provider is `admin@example.com` /
-`password`.
+---
+
+Try logging in into your with your Google credentials now. It should work.
 
 ### (Option 3) Using an online service
 
@@ -614,17 +629,18 @@ e-mail, run your application in debug mode, and then inspect the `Authentication
 <summary>📖 Display email</summary>
 
 ```java
+
 @Controller
 class GreetingsController {
 
-	//...
+    //...
 
-	private static String getName(Authentication authentication) {
-		if (authentication.getPrincipal() instanceof OidcUser oidcUser) {
-			return oidcUser.getEmail();
-		}
-		return authentication.getName();
-	}
+    private static String getName(Authentication authentication) {
+        if (authentication.getPrincipal() instanceof OidcUser oidcUser) {
+            return oidcUser.getEmail();
+        }
+        return authentication.getName();
+    }
 
 }
 ```
@@ -653,9 +669,8 @@ features!
 
 We will now discuss how Spring Security achieves what we have implemented so far.
 
-[^1]:
-    Dex is intended to provide a "federated" identity provider that can act as an "auth proxy"
-    between your app and many identity providers. Think of it as an identity proxy, or some sort of
-    "[Anti-Corruption Layer](https://softwareengineering.stackexchange.com/questions/184464/what-is-an-anti-corruption-layer-and-how-is-it-used)".
-    We won't be using those capabilities here, and instead use it in "standalone" mode, which is
-    only intended for local development.
+[^1]: Dex is intended to provide a "federated" identity provider that can act as an "auth proxy"
+between your app and many identity providers. Think of it as an identity proxy, or some sort
+of "[Anti-Corruption Layer](https://softwareengineering.stackexchange.com/questions/184464/what-is-an-anti-corruption-layer-and-how-is-it-used)".
+We won't be using those capabilities here, and instead use it in "standalone" mode, which is
+only intended for local development.
