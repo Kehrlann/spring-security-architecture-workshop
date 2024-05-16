@@ -137,7 +137,7 @@ layout: default
 
 ## Let's get started!
 
-**https://bit.ly/jfall-spring-security**
+**https://bit.ly/vdb-spring-security**
 
 <img src="/qr-code.png" style="margin: auto; height: 300px;" >
 
