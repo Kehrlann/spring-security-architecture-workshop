@@ -43,7 +43,8 @@ Try and answer questions by looking at the docs first, rather than looking up th
 immediately!
 
 There are often links to the reference docs or API docs; it's usually a good idea to at least take a
-peek.
+peek. Getting into this habit will help you understand Spring Security (and many other libs) by
+yourself, even after the workshop is over.
 
 Lastly - ALL solutions are in the `solutions` branch, but don't peek, that would defeat the whole
 purpose of learning.
