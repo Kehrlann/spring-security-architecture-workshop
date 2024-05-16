@@ -435,9 +435,6 @@ About those `Authentication`s... I may have oversimplified a bit.
 <img src="provider-manager.png" height="400px" style="height: 400px; margin: auto;">
 
 ---
-
-
----
 layout: section
 ---
 
