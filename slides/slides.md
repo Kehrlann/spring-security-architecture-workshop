@@ -541,6 +541,28 @@ layout: default
 - <logos-firefox /> https://garnier.wf/
 - <fluent-emoji-flat-envelope-with-arrow /> contact@garnier.wf
 
+---
+layout: default
+---
+
+# References
+
+
+### **🥺 Feedback please 🥺**
+
+<!-- ouch the hack -->
+<!-- https://mobile.devoxx.com/events/dvbe23/talks/2943/details -->
+<div style="float:right; margin-right: 50px; text-align: center;">
+  <img src="/qr-code-openfeedback.png" style="margin-bottom: -45px; margin-top: -15px;" >
+</div>
+
+<br>
+
+- <logos-twitter /> @Kehrlann
+- <logos-mastodon-icon /> @Kehrlann@hachyderm.io
+- <logos-firefox /> https://garnier.wf/
+- <fluent-emoji-flat-envelope-with-arrow /> contact@garnier.wf
+
 
 ---
 layout: image
