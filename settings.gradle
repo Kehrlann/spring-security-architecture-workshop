@@ -2,8 +2,20 @@ pluginManagement {
     plugins {
         id "java"
 
-        id "org.springframework.boot" version "3.2.5"
-        id "io.spring.dependency-management" version "1.1.4"
+        id "org.springframework.boot" version "3.4.0-M3"
+        id "io.spring.dependency-management" version "1.1.6"
+    }
+
+    repositories {
+        maven { url 'https://repo.spring.io/milestone' }
+        gradlePluginPortal()
+    }
+}
+
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+        maven { url 'https://repo.spring.io/milestone' }
     }
 }
 
