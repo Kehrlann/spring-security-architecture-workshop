@@ -20,6 +20,11 @@ dependencies {
     developmentOnly "org.springframework.boot:spring-boot-docker-compose"
     developmentOnly "org.springframework.boot:spring-boot-devtools"
     testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "org.springframework.boot:spring-boot-testcontainers"
+    testImplementation "org.springframework.security:spring-security-test"
+    testImplementation "org.testcontainers:junit-jupiter"
+    testImplementation "wf.garnier:spring-boot-testcontainers-dex:3.2.0"
+    testImplementation "org.htmlunit:htmlunit"
 }
 
 tasks.test { useJUnitPlatform() }
