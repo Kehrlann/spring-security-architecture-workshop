@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 class GreetingsController {
 
-	private final ConferenceService conferenceController;
+	private final ConferenceService conferenceService;
 
-	public GreetingsController(ConferenceService conferenceController) {
-		this.conferenceController = conferenceController;
+	public GreetingsController(ConferenceService conferenceService) {
+		this.conferenceService = conferenceService;
 	}
 
 	@GetMapping("/")
@@ -35,7 +35,7 @@ class GreetingsController {
 	@GetMapping("/admin")
 	public String admin(Authentication authentication, Model model) {
 		model.addAttribute("name", getName(authentication));
-		model.addAttribute("conferences", conferenceController.getConferences());
+		model.addAttribute("conferences", conferenceService.getConferences());
 		return "admin";
 	}
 
