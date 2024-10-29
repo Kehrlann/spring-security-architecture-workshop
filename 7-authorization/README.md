@@ -173,7 +173,7 @@ This has nothing to do with Spring Security. It could make you think of other wa
 
 On the other hand, if you want to handle things with redirects to another page, you can configure Spring Security.
 Take a look
-at [Exception Handling](https://docs.spring.io/spring-security/reference/servlet/architecture.html#servlet-exceptiontranslationfilter) 
+at [Exception Handling](https://docs.spring.io/spring-security/reference/servlet/architecture.html#servlet-exceptiontranslationfilter)
 in the reference docs. You can update your security configuration like so:
 
 ---
@@ -187,23 +187,25 @@ public class SecurityConfiguration {
 
     // ...
 
-   @Bean
-   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-      return http
-              // ...
-              .exceptionHandling(exceptions -> {
-                 exceptions.accessDeniedHandler((request, response, accessDeniedException) -> {
-                    response.sendRedirect("/private");
-                 });
-              })
-              .build();
-   }
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
+                // ...
+                .exceptionHandling(exceptions -> {
+                    exceptions.accessDeniedHandler((request, response, accessDeniedException) -> {
+                        response.sendRedirect("/private");
+                    });
+                })
+                .build();
+    }
 
     // ...
 }
 ```
 
 </details>
+
+---
 
 ## Step 3: "modern" HTTP authorization
 
