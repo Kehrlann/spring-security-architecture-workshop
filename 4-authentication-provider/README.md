@@ -27,9 +27,9 @@ We are starting from the app that was built in the previous module. You can eith
 project your started in the previous module (recommended), or, if you're a bit behind or would like
 to start fresh, start from the project that is in this directory.
 
-If you use the app in this directory, note that we use Dex with docker-compose as the SSO identity
-provider. If you haven't, you can remove the `org.springframework.boot:spring-boot-docker-compose`
-dependency in `build.gradle`, and re-use your `application.yml` file from the previous module.
+
+By default, we have disabled the SSO integration, as it relies on Docker. However, if you use
+the `docker` profile, you'll get SSO back in.
 
 ## Step 0: verify that the app runs
 
@@ -44,10 +44,25 @@ You can also run from your favorite IDE.
 With the current setup of the app, you can log-in with:
 
 - Form login:
-    - alice / alice-password
-    - bob / bob-password
+  - alice / alice-password
+  - bob / bob-password
+
+If you run the application with the Docker profile, you'll be able to use SSO login with Dex as well.
+
+Run with:
+
+```bash
+SPRING_PROFILES_ACTIVE=docker ./gradlew :4-authentication-provider:bootRun
+```
+
+or
+
+```bash
+./gradlew :4-authentication-provider:bootRun --args='--spring.profiles.active=docker'
+```
+
 - Dex
-    - admin@example.com / password
+  - admin@example.com / password
 
 A filter has been registered that blocks requests with a `x-forbidden: true` header, called
 `ForbiddenFilter`.
