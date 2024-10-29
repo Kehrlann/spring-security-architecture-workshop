@@ -203,6 +203,7 @@ public class SecurityConfiguration {
 }
 ```
 
+</details>
 
 ## Step 3: "modern" HTTP authorization
 
