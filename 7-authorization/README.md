@@ -164,6 +164,12 @@ Putting them in deep down in your service code may be surprising to discover. Ho
 another level of "defense in depth", to make sure core methods have access control. There is no "one
 size fits all".
 
+> 🧑‍🔬 Here we are using Spring-Security provided annotations, but if you end up reusing the same authorization
+> behavior across classes, you can introduce your own annotations, like `@IsAdmin` or `@UsernameHasLetter("a")`.
+> If you're curious, take a look
+> at [Using Meta Annotations](https://docs.spring.io/spring-security/reference/6.4/servlet/authorization/method-security.html#meta-annotations)
+> in the reference documentation.
+
 ## (Optional) Step 2: don't blow up when bob navigates to `/admin`
 
 Instead, gracefully handle the exception and don't display the conferences on the page.
