@@ -29,7 +29,7 @@ provided here.
 
 We also have 4 users:
 
-- `alice`, password: `password`, has role `admin`
+- `alice`, password: `password`, has roles `admin` and `geoguesser`
 - `bob`, password: `password`, has role `admin`
 - `carol`, password: `password`, has role `admin`
 - `dave`, password: `password`, has role `user`, not admin!
@@ -125,7 +125,7 @@ ConferenceService.java:
 public class ConferenceService {
 
     @PreAuthorize("@usernameAuthorizationService.isAuthorized(authentication.name)")
-    public Collection<String> getConferences() {
+    public Collection<Conference> getConferences() {
         // ...
     }
 
@@ -267,13 +267,98 @@ public class SecurityConfiguration {
 Log in as `alice` and try navigating to http://localhost:8080/oauth . It should yield a 403 error.
 Now log out, log back in using SSO, then navigate to http://localhost:8080/oauth ; it should work.
 
+## Step 4: "object-level" security
+
+The above techniques, either request-based or method-based security, only provide a status allowed/denied
+status on the action. They do not provide fine-grained control on _which_ data the user has access to.
+
+For example, implementing a rule saying "operators can see user information but only admins can see credit
+card information" would be hard to implement using those primitives. There are ways around it, such as
+putting security filtering in your business logic, or using
+the [@PostFilter annotation](https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html#use-postfilter)
+
+Going back to our list of conferences, imagine that we want only users with the `geoguesser` role to be
+able to see the venue of a conference. (Remember! Only the admins can see the `admin` page, and thus, the
+list of conferences). Only `alice` has the `geoguesser` role.
+
+Read up
+on [Authorizing Arbitrary Objects](https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html#authorize-object),
+specifically the first section, and then modify the `ConferenceService.Conference` object so that only `geoguesser`s can
+see the venue of a conference. Notice that if you just annotate with security annotations, trying to read a field the
+user is not allowed to access will result in an `AccesDenied` exception. If you have implemented the optional part of
+step 2, this means the user will be redirected to `/private`. Read up
+on [Providing Fallback Values When Authorization Is Denied](https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html#fallback-values-authorization-denied),
+and modify the `Conference` object so that, instead of throwing an exception, you return a `null` for the venue when the
+user is not authorized to see the information.
+
+---
+
+<details>
+
+<summary>📖 solution</summary>
+
+ConferenceService.java:
+
+```java
+
+@Component
+public class ConferenceService {
+
+    // ...
+    public static class Conference {
+        private final String name;
+
+        private final String venue;
+
+        public Conference(String name, String venue) {
+            this.name = name;
+            this.venue = venue;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        @PreAuthorized("hasRole('geoguesser')")
+        // Notice that we use a NullValueHandler.class, which we must create
+        @HandleAuthorizationDenied(handlerClass = NullValueHandler.class)
+        public String getVenue() {
+            return venue;
+        }
+    }
+
+}
+```
+
+Create a `NullValueHandler.java` and expose it as a bean, for example with `@Component`:
+
+```java
+
+@Component
+class NullValueHandler implements MethodAuthorizationDeniedHandler {
+
+    @Override
+    public Object handleDeniedInvocation(MethodInvocation methodInvocation, AuthorizationResult authorizationResult) {
+        // If the access is denied, return null.
+        // You have access to the MethodInvocation, so you could apply specific return values based on the parameters
+        // passed to the original method.
+        return null;
+    }
+
+}
+```
+
+</details>
+
+---
+
+Now connect to http://localhost:8080/admin as `carol`, you should see the list of conferences without the venue.
+Connecting as `alice` should still show the list of conferences in the format `<NAME> (<VENUE>)`.
+
 ## Closing out
 
-That's all for a basic authorization overview. Obviously those are toy examples, not real-world
-use-cases.
+That's all for a basic authorization overview. Obviously those are toy examples, not real-world use-cases.
 
-There are other utilities, such as Post-Authorization, Pre- and Post-Filtering, but those are very
-specific use-cases that I do not encourage using unless you have another choice. I do encourage you
-to read the whole
-[Authorization section](https://docs.spring.io/spring-security/reference/servlet/authorization/index.html)
-in the reference docs, there are discussions and nuances of what to use when.
+There is much more to authorization, and I do encourage you to read the
+whole [Authorization section](https://docs.spring.io/spring-security/reference/servlet/authorization/index.html) in the
+reference docs, there are discussions and nuances of what to use when.

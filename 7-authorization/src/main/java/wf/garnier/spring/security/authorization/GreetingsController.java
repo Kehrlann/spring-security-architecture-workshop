@@ -35,8 +35,16 @@ class GreetingsController {
 	@GetMapping("/admin")
 	public String admin(Authentication authentication, Model model) {
 		model.addAttribute("name", getName(authentication));
-		model.addAttribute("conferences", conferenceService.getConferences());
+		model.addAttribute("conferences", conferenceService.getConferences().stream().map(this::formatConference));
 		return "admin";
+	}
+
+	private String formatConference(ConferenceService.Conference conference) {
+		if (conference.getVenue() == null) {
+			return conference.getName();
+		}
+
+		return "%s (%s)".formatted(conference.getName(), conference.getVenue());
 	}
 
 	private static String getName(Authentication authentication) {

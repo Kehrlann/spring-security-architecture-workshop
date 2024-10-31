@@ -45,7 +45,7 @@ public class SecurityConfiguration {
         var userFactory = User.withDefaultPasswordEncoder();
         var alice = userFactory.username("alice")
                 .password("password")
-                .roles("admin", "hr")
+                .roles("admin", "geoguesser")
                 .build();
         var bob = userFactory.username("bob")
                 .password("password")
