@@ -81,6 +81,30 @@ class AuthorizationApplicationTests {
                     .hasRedirectedUrl("/private");
         }
 
+        @Test
+        @WithMockUser(username = "test-user-with-a", authorities = { "ROLE_admin", "ROLE_geoguesser" })
+        void showsVenues() {
+            mvc.get()
+                    .uri("/admin")
+                    .exchange()
+                    .assertThat()
+                    .hasStatus(HttpStatus.OK)
+                    .bodyText()
+                    .contains("Devoxx Belgium (Kinepolis)");
+        }
+
+        @Test
+        @WithMockUser(username = "test-user-with-a", authorities = { "ROLE_admin" })
+        void hidesVenues() {
+            mvc.get()
+                    .uri("/admin")
+                    .exchange()
+                    .assertThat()
+                    .hasStatus(HttpStatus.OK)
+                    .bodyText()
+                    .doesNotContain("Kinepolis");
+        }
+
     }
 
     @Nested
