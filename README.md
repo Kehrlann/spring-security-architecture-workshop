@@ -20,7 +20,7 @@ From the
 ## Pre-requisites
 
 - Basic knowledge of Spring and Spring Boot
-  - Familiarity with Spring Security is not expected, but is a plus
+    - Familiarity with Spring Security is not expected, but is a plus
 - Java 17+ ; consider using [SDKman](https://sdkman.io/) to install new versions of Java
 - An HTTP client, such as `curl`, `httpie`, `Postman`, ...
 - Docker, for an OpenID (SSO) provider
@@ -52,7 +52,7 @@ purpose of learning.
 ## Not covered here
 
 Sorry, we won't have the time to cover everything. We could spend a entire week if we went deep on
-all things! Notably, we won't cover:
+all things! Notably, we probably will not cover:
 
 - Any specific security scheme or pattern, other than in passing (e.g. OAuth, SAML, ...)
 - Reactive-HTTP Security: it is fairly similar to Servlet. Refer to
@@ -65,25 +65,27 @@ all things! Notably, we won't cover:
 _instructor_ Welcome ; explain the format ; share the repository
 
 1. Adding Spring Security to an existing project
-   - _instructor_ 🗒️ mention WebSecurityConfigurerAdapater and lambda-DSL
-   - _instructor_ 🗒️ a word on VS Code and IntelliJ
-   - _instructor_ 🗒️ a word on IntelliJ's HTTP client
-   - _instructor_ 💡 introduce filters and filter chain
+    - _instructor_ 🗒️ mention WebSecurityConfigurerAdapater and lambda-DSL
+    - _instructor_ 🗒️ a word on VS Code and IntelliJ
+    - _instructor_ 🗒️ a word on IntelliJ's HTTP client
+    - _instructor_ 💡 introduce filters and filter chain
 2. Implementing your first filter
-   - _instructor_ 🗒️ walk through CsrfFilter
-   - _instructor_ 🗒️ explain how to check which filters are registered
-   - _instructor_ 💡️ introduce authentication and security context
+    - _instructor_ 🗒️ walk through CsrfFilter
+    - _instructor_ 🗒️ explain how to check which filters are registered
+    - _instructor_ 💡️ introduce authentication and security context
 3. Adding custom authentication
-   - _instructor_ 🗒️ a word on persisting authentication between requests
-   - _instructor_ 💡 introduce use-case, why a filter would be inconvenient
+    - _instructor_ 🗒️ a word on persisting authentication between requests
+    - _instructor_ 💡 introduce use-case, why a filter would be inconvenient
 4. An authentication provider
-   - _instructor_ 🗒️ debrief auth types (HTTP Basic vs Form POST)
-   - _instructor_ 💡️ present configurers, examples: CSRFConfigurer, HttpBasicConfigurer
+    - _instructor_ 🗒️ debrief auth types (HTTP Basic vs Form POST)
+    - _instructor_ 💡️ present configurers, examples: CSRFConfigurer, HttpBasicConfigurer
 5. Configurers (this may be optional)
-   - _instructor_ 🗒️ debrief reference docs vs configurers
-   - _instructor_ 💡️ explain post-processing and delegation
-   - _instructor_ 💡️ note: the following requires Docker, otherwise change the use-case
+    - _instructor_ 🗒️ debrief reference docs vs configurers
+    - _instructor_ 💡️ explain post-processing and delegation
+    - _instructor_ 💡️ note: the following requires Docker, otherwise change the use-case
 6. Overloading Spring Security behavior
-   - _instructor_ 💡️ explain post-processing and delegation
+    - _instructor_ 💡️ explain post-processing and delegation
 7. Authorization, permissions and access control
-   - _instructor_ 💡️ closing thoughts
+    - _instructor_ 💡️ explain authorization tradeoffs
+8. Testing
+    - _instructor_ 💡️ closing thoughts.

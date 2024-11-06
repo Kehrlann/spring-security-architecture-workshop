@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>📊 Admin page [Spring Sec: The Good Parts]</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+<h1>Admin section 📊👔</h1>
+<p>Hello, ~[<th:block th:text="${name}"/>]~ !</p>
+<p>This is a very serious admin section. Only admins can see this page.</p>
+<h2>Navigate</h2>
+<a href="/private" class="btn">Go to private</a>
+<h2>Log out</h2>
+<form method="post" action="/logout" th:if="${_csrf != null}">
+    <input name="_csrf" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+    <button class="btn" type="submit">Log out</button>
+</form>
+</body>
+</html>
