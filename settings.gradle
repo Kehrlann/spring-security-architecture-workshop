@@ -27,5 +27,6 @@ include(
         "4-authentication-provider",
         "5-configurers",
         "6-post-processing",
-        "7-authorization"
+        "7-authorization",
+        "8-testing"
 )
