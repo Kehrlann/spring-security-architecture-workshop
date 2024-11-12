@@ -13,10 +13,9 @@ We are going to apply three authorization rules, that we added in the previous m
 
 1. Only users with the role `admin` can view the `/admin` page. This will showcase basic HTTP
    request security.
-2. Only users with an `a` in their name can list conferences. This will showcase method security,
-   with a complicated-ish SPeL expression.
-3. Only users logged in with OAuth can view the `/oauth` page. This will showcase "modern" HTTP
-   request security.
+1. Users can log in with SSO using Dex, but only `@corp.example.com` e-mail addresses are allowed,
+   other domains cannot log in. For example, e-mails ending in `@example.com` will not be able to
+   log in.
 
 ## The starting app
 
