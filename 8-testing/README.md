@@ -101,6 +101,15 @@ For our first test, we'll ensure that the `/` page returns `HTTP 200 OK`, and th
 
 ```java
 
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.test.web.servlet.assertj.MockMvcTester;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 class TestingApplicationTests {
@@ -190,6 +199,8 @@ to the login page. This is due to using `.httpBasic()` in our security configura
 
 ```java
 
+import org.springframework.security.test.context.support.WithMockUser;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 class TestingApplicationTests {
@@ -230,9 +241,10 @@ Notice here that we aren't using any of the existing users, `alice`, `bob` or `d
 user, that only really exists in the scope of the test using it.
 
 Lastly, we would like to make sure that our check on the `admin` role works. Discover how you can configure mock user to
-include roles or authorities, and write to tests trying to access the `/admin` page. If the test user has the correct
-role `/admin`, they should get the page. If they don't, they should get redirected to the `/private?denied` page - there
-are special methods in the `MockMvcTester` result to test for redirect urls.
+include roles or authorities by looking at the available values in `@WithMockerUser`, and write to tests trying to
+access the `/admin` page. If the test user has the correct role `admin`, they should get the page. If they don't, they
+should get redirected to the `/private?denied` page - there are special methods in the `MockMvcTester` result to test
+for redirect urls.
 
 ---
 
@@ -286,12 +298,11 @@ All the tests above do not actually exercise _authentication_. They touch filter
 trust Spring Security to do the right thing for us.
 
 This is, unless we have some authentication-related specific code: a custom login page, or our
-`DanielAuthenticationProvider`. We want to ensure that `daniel` can log in with any password, but that `alice` must use
-her real password. The easiest to check authentication code in our case is to rely on HTTP basic auth. Check out the
+`DanielAuthenticationProvider` for example. We want to ensure that `daniel` can log in with any password, but that
+`alice` must use her real password. The easiest way to check authentication code in our case is to rely on HTTP basic
+auth. Read up on
 [SecurityMockMvcRequestPostProcessors](https://docs.spring.io/spring-security/reference/servlet/test/mockmvc/request-post-processors.html),
-and how you can use them with `MockMvc*`.
-
-Write three tests accessing the `/private` page:
+and how you can use them with `MockMvc*`. Then write three tests accessing the `/private` page:
 
 - One for `daniel` with any password
 - One for `alice` with the correct password
@@ -304,6 +315,9 @@ Write three tests accessing the `/private` page:
 <summary>📖 TestingApplicationTests.java</summary>
 
 ```java
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -404,10 +418,12 @@ logging:
     org.springframework.security: TRACE
 ```
 
-When you have found the issue, think for a second how you would fix it. The most obvious way would be to use a
-browser-based testing tool, or at least parse the HTML response and extract info from it. This is very inconvenient, and
-that's why there is a `SecurityMockMvcRequestPostProcessors` for it! Find the correct one and fix the test. You can also
-add some tests for form-login for `alice`, one with the correct password and one with an incorrect password.
+When you have found the issue (hint: it has to do with protecting POST request from cross-site attacks), think for a
+second how you would fix it. The most obvious way would be to use a browser-based testing tool, or at least parse the
+HTML response and extract the information we need from it. This is very inconvenient, and that's why there is a
+`SecurityMockMvcRequestPostProcessors` for this specific use-case! Find the correct post-processor, and fix the test.
+You can also add some tests for form-login for `alice`, one with the correct password and one with an incorrect
+password.
 
 ---
 
@@ -416,6 +432,8 @@ add some tests for form-login for `alice`, one with the correct password and one
 <summary>📖 TestingApplicationTests.java</summary>
 
 ```java
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -429,7 +447,7 @@ class TestingApplicationTests {
                 .uri("/login")
                 .param("username", "daniel")
                 .param("password", "foobar")
-                .with(SecurityMockMvcRequestPostProcessors.csrf())
+                .with(csrf())
                 .exchange()
                 .assertThat()
                 .hasStatus(HttpStatus.FOUND)
@@ -443,7 +461,7 @@ class TestingApplicationTests {
                 .uri("/login")
                 .param("username", "alice")
                 .param("password", "password")
-                .with(SecurityMockMvcRequestPostProcessors.csrf())
+                .with(csrf())
                 .exchange()
                 .assertThat()
                 .hasStatus(HttpStatus.FOUND)
@@ -457,7 +475,7 @@ class TestingApplicationTests {
                 .uri("/login")
                 .param("username", "alice")
                 .param("password", "wrong-password")
-                .with(SecurityMockMvcRequestPostProcessors.csrf())
+                .with(csrf())
                 .exchange()
                 .assertThat()
                 .hasStatus(HttpStatus.FOUND)
@@ -471,6 +489,11 @@ class TestingApplicationTests {
 </details>
 
 ---
+
+> 🧑‍🔬 If you would like to learn more about Cross-Site Request Forgery attacks, the reference docs has a nice chapter on
+> [how the attack works](https://docs.spring.io/spring-security/reference/features/exploits/csrf.html); and, as usual
+> when it comes to security, the [OWASP website](https://owasp.org/www-community/attacks/csrf) is one of the most
+> complete resources out there.
 
 ## Step 4: Testing with SSO users
 
@@ -489,6 +512,8 @@ then write a test showing the `/private` page with a user logging in with OIDC a
 <summary>📖 TestingApplicationTests.java</summary>
 
 ```java
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oidcLogin;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -522,8 +547,8 @@ Again, this does not test the _authentication_ mechanism, only the authorization
 ## Step 5: Full integration testing with SSO and Dex
 
 > ⚠️ This section introduces many concepts at once, and may be complicated to implement. Depending on whether you've
-> used these things before or not, it may be hard to the tests by yourself - but it's fine! The idea is to show what's
-> possible, rather than have you implement everything!
+> used these things before or not, it may be hard to write the tests by yourself - but it's fine! The idea is to show
+> what's possible, rather than have you implement everything.
 
 > 🧑‍🔬 We have already imported all the required dependencies in `build.gradle`. Take a look if you are curious!
 
@@ -532,18 +557,22 @@ OpenID identity provider. We could use an online service, such as Okta or Micros
 tests to touch the network. We could also use a local Keycloak, but we would like to avoid setting up things on your dev
 machine just to run your tests.
 
-So the easiest solution is to reach for containerized apps - like we do with the `docker` profile. But rather than
+So the easiest solution is to reach for containerized services - like we do with the `docker` profile. But rather than
 launching those containers manually, we can use [Testcontainers](https://testcontainers.com/), which offers a Java API
 to start and configure containers. For this, we're going to use Dex, similar to our Docker-Compose integration, because
 it starts much faster than Keycloak.
 
 First, read up
 on [Spring Boot's Testcontainers integration](https://docs.spring.io/spring-boot/reference/testing/testcontainers.html#page-title).
-You could configure Dex manually, but the lifecycle is complicated: there is a circular dependency between Dex and your
-application.
+start by trying to add a Dex container to your tests, using Testcontainer's `GenericContainer<?>`. At least
+ensure that the Dex container starts and stops with your tests, even if your Boot application does not connect to it
+yet.
 
-If you're feeling really adventurous, try and configure Dex manually using Testcontainer's `GenericContainer<?>`.
-If you'd like a more "curated" experience, you are free to use
+If you're feeling really adventurous, try and configure Dex manually using Testcontainer's `GenericContainer<?>`, but
+the lifecycle is complicated: there is a circular dependency between Dex and your application, where Dex needs to know
+the port your app runs on before starting, and your app need to know Dex's port before starting. This can be solved by
+fixing the ports, which we don't recommend: it's better to avoid conflicts by having both containers and tests run on
+random ports. If you'd like a more "curated" experience, you are free to use
 my [testcontainers-dex](https://github.com/Kehrlann/testcontainers-dex) module, which you can also find on
 the [Testcontainers modules catalog](https://testcontainers.com/modules/). It has a Spring Boot integration, which
 allows you to use `@ServiceConnection` directly.
@@ -554,8 +583,9 @@ environment. I recommend using [HtmlUnit](https://htmlunit.org/) for a lightweig
 to driver a real browser through Selenium. Take a look at
 their [getting started guide](https://htmlunit.org/gettingStarted.html).
 
-Create a new test file, for example `SsoIntegrationTests`, and, using Testcontainers-Dex + HTML-Unit, write two tests
-that shows that a user with an address in `@example.com` can't log in, but and example with an address ending in
+Create a new test file, for example `SsoIntegrationTests`, ensure your `@SpringBootTest` has the correct
+`webEnvironment` set up. Using Testcontainers-Dex + HTML-Unit, write two tests that shows that a user with an address in
+`@example.com` can't log in, but a user with an address ending in
 `@corp.example.com` can. If you need inspiration, you should take a look at the samples in
 my [Testcontainers-Dex](https://github.com/Kehrlann/testcontainers-dex/blob/main/sample-spring/README.md) module.
 
@@ -567,6 +597,23 @@ my [Testcontainers-Dex](https://github.com/Kehrlann/testcontainers-dex/blob/main
 <summary>📖 TestingApplicationTests.java</summary>
 
 ```java
+
+import org.htmlunit.WebClient;
+import org.htmlunit.html.HtmlAnchor;
+import org.htmlunit.html.HtmlInput;
+import org.htmlunit.html.HtmlPage;
+import org.htmlunit.html.HtmlPasswordInput;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
+import wf.garnier.testcontainers.dexidp.DexContainer;
+
+import java.io.IOException;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
@@ -580,8 +627,8 @@ class SsoIntegrationTests {
     @Container
     private static final DexContainer dexContainer = new DexContainer(
             DexContainer.DEFAULT_IMAGE_NAME.withTag(DexContainer.DEFAULT_TAG))
-        .withUser(ALICE)
-        .withUser(BOB);
+            .withUser(ALICE)
+            .withUser(BOB);
 
     @LocalServerPort
     private int port;
@@ -646,5 +693,5 @@ curious about the other things the library has to offer.
 
 Testing security is important. Disabling security just for tests is a terribly bad idea. It leads to slip-ups and
 un-secured apps shipped to production. It is much better to test your security code, and pay the small overhead to have
-security in your business logic tests as well.
+security enabled in your business logic tests as well.
 
