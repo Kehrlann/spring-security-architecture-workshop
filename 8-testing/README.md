@@ -578,8 +578,10 @@ class SsoIntegrationTests {
 
     @ServiceConnection
     @Container
-    private static final DexContainer dexContainer = new DexContainer(DexContainer.DEFAULT_IMAGE_NAME).withUser(ALICE)
-            .withUser(BOB);
+    private static final DexContainer dexContainer = new DexContainer(
+            DexContainer.DEFAULT_IMAGE_NAME.withTag(DexContainer.DEFAULT_TAG))
+        .withUser(ALICE)
+        .withUser(BOB);
 
     @LocalServerPort
     private int port;
