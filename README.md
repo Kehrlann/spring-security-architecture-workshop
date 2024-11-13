@@ -57,8 +57,6 @@ all things! Notably, we probably will not cover:
 - Any specific security scheme or pattern, other than in passing (e.g. OAuth, SAML, ...)
 - Reactive-HTTP Security: it is fairly similar to Servlet. Refer to
   [the docs](https://docs.spring.io/spring-security/reference/reactive/index.html)
-- Testing: Testing is important, but I'm confident you'll figure it out by ... following
-  [the docs](https://docs.spring.io/spring-security/reference/servlet/test/index.html) of course :)
 
 ## Modules
 
@@ -88,4 +86,4 @@ _instructor_ Welcome ; explain the format ; share the repository
 7. Authorization, permissions and access control
     - _instructor_ 💡️ explain authorization tradeoffs
 8. Testing
-    - _instructor_ 💡️ closing thoughts.
+    - _instructor_ 💡️ closing thoughts
