@@ -2,7 +2,7 @@ issuer: "http://localhost:5556"
 storage:
   type: sqlite3
   config:
-    file: /opt/dex.db
+    file: /etc/dex/dex.db
 web:
   http: 0.0.0.0:5556
 staticClients:

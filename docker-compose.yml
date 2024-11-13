@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   authserver:
-    image: "bitnami/dex:2.37.0"
+    image: "dexidp/dex:v2.37.0"
     deploy:
       replicas: 1
     configs:
@@ -10,6 +10,7 @@ services:
     ports:
       - 5556:5556
     command:
+      - dex
       - serve
       - /opt/config/dex.yml
     healthcheck:
