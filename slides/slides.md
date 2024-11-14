@@ -8,6 +8,7 @@ transition: none
 css: unocss
 aspectRatio: "16/9"
 colorSchema: "light"
+canvasWidth: 1024
 ---
 
 # Spring Security
@@ -19,7 +20,7 @@ colorSchema: "light"
 
 ### Daniel Garnier-Moiroux
 
-Voxxed Brussels, 2024-05-21
+cronos.be, 2024-11-15
 
 ---
 layout: image-right
@@ -34,8 +35,9 @@ class: smaller
 Software Engineer @ Broadcom
 
 - <logos-spring-icon /> Spring + Tanzu
-- <logos-twitter /> @Kehrlann
+- <logos-bluesky /> @garnier.wf
 - <logos-mastodon-icon /> @Kehrlann@hachyderm.io
+- <logos-twitter /> @Kehrlann
 - <logos-firefox /> https://garnier.wf/
 - <logos-github-icon /> github.com/Kehrlann/
 - <fluent-emoji-flat-envelope-with-arrow /> contact@garnier.wf
@@ -52,6 +54,7 @@ Software Engineer @ Broadcom
     1. `Configurers`: how things are wired together
     1. Overloading existing behavior
     1. Authorization
+    1. Testing
 
 ---
 layout: section
@@ -96,9 +99,7 @@ layout: default
 
 - Reactive
     - Focus on Servlet
-- Testing
-- Not much about Authorization
-    - Focus on Authentication
+- Testing (unless we have time)
 
 ---
 layout: default
@@ -118,14 +119,15 @@ layout: default
 
 # How we'll work
 
-- 7 self-guided modules
+- 8 self-guided modules
 - Between each module
     - Debrief
     - Introduce theory for the next module
-  
+- Solutions are in the `solutions` branch
+
 <br>
 
-> It's the second time I give this workshop. Some things may not work.
+> This workshop is constantly evolving. Some things may not work.
 >
 > Thank you for your understanding 🙇
 >
@@ -137,7 +139,7 @@ layout: default
 
 ## Let's get started!
 
-**https://bit.ly/vdb-spring-security**
+**https://bit.ly/spring-security-workshop**
 
 <img src="/qr-code.png" style="margin: auto; height: 300px;" >
 
@@ -509,7 +511,25 @@ layout: section
 
 - Prefer authorities to custom authorization
 - Use method security parsimoniously
+- Granular control with `@AuthorizeReturnObject`
 - Be wary of `@PostFilter` and `@PostAuthorize`
+
+---
+layout: section
+---
+
+## _Module 8_
+
+# Testing
+
+---
+
+# _Module 8_ debrief
+
+- Don't disable security in your tests
+- Use `@WithMockUser` (or write custom annotations!)
+- Use `SecurityMockMvcRequestsPostProcessor`
+- Use some integration tests
 
 ---
 layout: section
@@ -523,43 +543,21 @@ layout: section
 layout: default
 ---
 
-# References
+# Feedback
 
-
-### **🥺 Feedback please 🥺**
-
-<!-- ouch the hack -->
-<!-- https://mobile.devoxx.com/events/dvbe23/talks/2943/details -->
-<div style="float:right; margin-right: 50px; text-align: center;">
-  <img src="/qr-code-feedback.png" style="margin-bottom: -45px; margin-top: -15px;" >
-</div>
-
-<br>
-
-- <logos-twitter /> @Kehrlann
-- <logos-mastodon-icon /> @Kehrlann@hachyderm.io
-- <logos-firefox /> https://garnier.wf/
-- <fluent-emoji-flat-envelope-with-arrow /> contact@garnier.wf
-
----
-layout: default
----
-
-# References
-
-
-### **🥺 Feedback please 🥺**
+### https://bit.ly/spring-security-workshop-feedback
 
 <!-- ouch the hack -->
 <!-- https://mobile.devoxx.com/events/dvbe23/talks/2943/details -->
 <div style="float:right; margin-right: 50px; text-align: center;">
-  <img src="/qr-code-openfeedback.png" style="margin-bottom: -45px; margin-top: -15px;" >
+  <img src="/qr-code-openfeedback.png" style="width: 380px; margin-bottom: -45px; margin-top: -15px;" >
 </div>
 
 <br>
 
-- <logos-twitter /> @Kehrlann
+- <logos-bluesky /> @garnier.wf
 - <logos-mastodon-icon /> @Kehrlann@hachyderm.io
+- <logos-twitter /> @Kehrlann
 - <logos-firefox /> https://garnier.wf/
 - <fluent-emoji-flat-envelope-with-arrow /> contact@garnier.wf
 
