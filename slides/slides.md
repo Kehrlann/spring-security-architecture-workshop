@@ -24,7 +24,7 @@ cronos.be, 2024-11-15
 
 ---
 layout: image-right
-image: /daniel-intro.jpg
+image: /daniel-intro.webp
 class: smaller
 ---
 
