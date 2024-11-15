@@ -231,7 +231,7 @@ that subclasses be immutable. Try and make your implementation immutable.
 ```java
 public class RobotAuthenticationToken extends AbstractAuthenticationToken {
 
-    public RobotAuthenticationToken(Collection<? extends GrantedAuthority> authorities) {
+    public RobotAuthenticationToken() {
         super(AuthorityUtils.createAuthorityList("ROLE_robot"));
     }
 
