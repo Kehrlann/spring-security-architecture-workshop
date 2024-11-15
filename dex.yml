@@ -9,6 +9,7 @@ staticClients:
   - id: base-client
     redirectURIs:
       - "http://localhost:8080/login/oauth2/code/dex"
+      - "http://127.0.0.1:8080/login/oauth2/code/dex"
     name: 'Base application'
     secret: base-secret
     grant_types:
