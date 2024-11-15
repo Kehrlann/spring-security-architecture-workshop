@@ -202,7 +202,8 @@ public class CustomOidcAuthenticationProvider implements AuthenticationProvider 
 Note that here, we could have used subclassing, but then we would have had to known how to wire the
 dependencies in.
 
-Here, this code is not used anywhere, so we nothing different should happen.
+Here, we're not doing anything with the dependencies, so we are happy with whatever defaults Spring
+Security wired in for us, and thus benefit from wrapping the existing instance.
 
 ## Step 3: Wire in the delegate in your `AuthenticationProvider`
 
