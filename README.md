@@ -79,7 +79,6 @@ _instructor_ Welcome ; explain the format ; share the repository
     - _instructor_ 💡️ present configurers, examples: CSRFConfigurer, HttpBasicConfigurer
 5. Configurers (this may be optional)
     - _instructor_ 🗒️ debrief reference docs vs configurers
-    - _instructor_ 💡️ explain post-processing and delegation
     - _instructor_ 💡️ note: the following requires Docker, otherwise change the use-case
 6. Overloading Spring Security behavior
     - _instructor_ 💡️ explain post-processing and delegation
