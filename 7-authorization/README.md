@@ -248,7 +248,7 @@ public class SecurityConfiguration {
                             (authSupplier, context) -> {
                                 Authentication authentication = authSupplier.get();
                                 return new AuthorizationDecision(
-                                        authentication instanceof OAuth2LoginAuthenticationToken);
+                                        authentication instanceof OAuth2AuthenticationToken);
                             });
                     authorize.anyRequest().authenticated();
                 })

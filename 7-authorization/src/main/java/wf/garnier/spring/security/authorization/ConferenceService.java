@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ConferenceService {
 
-	@PreAuthorize("@usernameAuthorizationService.isAuthorized(authentication.name)")
 	public Collection<Conference> getConferences() {
 		// These are all the conferences I have spoken at in 2023 :)
 		return List.of(new Conference("VoxxedDays Zürich", "Sihlcity Arena Cinema"),
