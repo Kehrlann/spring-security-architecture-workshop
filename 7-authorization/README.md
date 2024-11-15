@@ -319,7 +319,7 @@ public class ConferenceService {
             return name;
         }
 
-        @PreAuthorized("hasRole('geoguesser')")
+        @PreAuthorize("hasRole('geoguesser')")
         // Notice that we use a NullValueHandler.class, which we must create
         @HandleAuthorizationDenied(handlerClass = NullValueHandler.class)
         public String getVenue() {
@@ -345,6 +345,25 @@ class NullValueHandler implements MethodAuthorizationDeniedHandler {
         return null;
     }
 
+}
+```
+
+Lastly, update the `ConferenceService` to trigger authorization checks on objects when returning them:
+
+```java
+
+@Component
+public class ConferenceService {
+
+   @PreAuthorize("@usernameAuthorizationService.isAuthorized(authentication.name)")
+   // vv add this vv
+   @AuthorizeReturnObject
+   // ^^ add this ^^
+   public Collection<Conference> getConferences() {
+      // ...
+   }
+
+    // ...
 }
 ```
 
